@@ -9,7 +9,7 @@ chep = pd.read_csv('./data/CHEP.csv')
 
 CHEP = chep.drop('img', axis =1)
 
-st.heading("Cairns Hospital Parametric Analysis")
+st.title("Cairns Hospital Parametric Analysis")
 with st.container():
     #st.dataframe(CHEP, use_container_width=True)
     chep_pcm = px.parallel_coordinates(CHEP, CHEP.columns, color="in:WWR",
