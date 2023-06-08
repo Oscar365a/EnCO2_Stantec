@@ -25,10 +25,11 @@ with st.container():
     chep_bx_02 = px.box(CHEP, CHEP["in:ShadeDepth"], CHEP["out:EUI(kWh/m2)"], "in:ShadeDepth", labels = {"in:ShadeDepth":"ShadeDepth", "out:EUI(kWh/m2)":"EUI(kWh/m2)"}, notched = True)
     chep_bx_03 = px.box(CHEP, CHEP["in:SHGC/VLT"], CHEP["out:EUI(kWh/m2)"], "in:SHGC/VLT", labels = {"in:SHGC/VLT":"SHGC/VLT", "out:EUI(kWh/m2)":"EUI(kWh/m2)"}, notched = True)
     chep_bx_04 = px.box(CHEP, CHEP["in:ExWall"], CHEP["out:EUI(kWh/m2)"], "in:ExWall", labels = {"in:ExWall":"ExWall", "out:EUI(kWh/m2)":"EUI(kWh/m2)"}, notched = True)
+    chep_bx_05 = px.box(CHEP, CHEP["in:U-Value"], CHEP["out:EUI(kWh/m2)"], "in:U-Value", labels = {"in:U-Value":"U-Value", "out:EUI(kWh/m2)":"EUI(kWh/m2)"}, notched = True)
     
     
     
-    cols = st.columns(4)
+    cols = st.columns(5)
     
     with cols[0]:
         st.plotly_chart(chep_bx_01, use_container_width=True)
@@ -38,39 +39,47 @@ with st.container():
         st.plotly_chart(chep_bx_03, use_container_width=True)
     with cols[3]:
         st.plotly_chart(chep_bx_04, use_container_width=True)
-    
-    
-    chep_bx_05 = px.box(CHEP, CHEP["in:ExWall"], CHEP['out:Average DA'], "in:ExWall", labels = {"in:ExWall":"ExWall", 'out:Average DA':"Average DA"}, notched = True)
-    chep_bx_06 = px.box(CHEP, CHEP["in:ShadeDepth"], CHEP['out:Average DA'], "in:ShadeDepth", labels = {"in:ShadeDepth":"ShadeDepth", 'out:Average DA':"Average DA"}, notched = True)
-    chep_bx_07 = px.box(CHEP, CHEP["in:SHGC/VLT"], CHEP['out:Average DA'], "in:SHGC/VLT", labels = {"in:SHGC/VLT":"SHGC/VLT", 'out:Average DA':"Average DA"}, notched = True)
-    chep_bx_08 = px.box(CHEP, CHEP["in:ExWall"], CHEP['out:Average DA'], "in:ExWall", labels = {"in:ExWall":"ExWall", 'out:Average DA':"Average DA"}, notched = True)
-    
-    cols = st.columns(4)
-    
-    with cols[0]:
+    with cols[4]:
         st.plotly_chart(chep_bx_05, use_container_width=True)
-    with cols[1]:
-        st.plotly_chart(chep_bx_06, use_container_width=True)
-    with cols[2]:
-        st.plotly_chart(chep_bx_07, use_container_width=True)
-    with cols[3]:
-        st.plotly_chart(chep_bx_08, use_container_width=True)
     
-    chep_bx_09 = px.box(CHEP, CHEP["in:ExWall"], CHEP['out:Total KgCO2e'], "in:ExWall", labels = {"in:ExWall":"ExWall", 'out:Total KgCO2e':"Total KgCO2e"}, notched = True)
-    chep_bx_10 = px.box(CHEP, CHEP["in:ShadeDepth"], CHEP['out:Total KgCO2e'], "in:ShadeDepth", labels = {"in:ShadeDepth":"ShadeDepth", 'out:Total KgCO2e':"Total KgCO2e"}, notched = True)
-    chep_bx_11 = px.box(CHEP, CHEP["in:SHGC/VLT"], CHEP['out:Total KgCO2e'], "in:SHGC/VLT", labels = {"in:SHGC/VLT":"SHGC/VLT", 'out:Total KgCO2e':"Total KgCO2e"}, notched = True)
-    chep_bx_12 = px.box(CHEP, CHEP["in:ExWall"], CHEP['out:Total KgCO2e'], "in:ExWall", labels = {"in:ExWall":"ExWall", 'out:Total KgCO2e':"Total KgCO2e"}, notched = True)
     
-    cols = st.columns(4)
+    chep_bx_06 = px.box(CHEP, CHEP["in:ExWall"], CHEP['out:Average DA'], "in:ExWall", labels = {"in:ExWall":"ExWall", 'out:Average DA':"Average DA"}, notched = True)
+    chep_bx_07 = px.box(CHEP, CHEP["in:ShadeDepth"], CHEP['out:Average DA'], "in:ShadeDepth", labels = {"in:ShadeDepth":"ShadeDepth", 'out:Average DA':"Average DA"}, notched = True)
+    chep_bx_08 = px.box(CHEP, CHEP["in:SHGC/VLT"], CHEP['out:Average DA'], "in:SHGC/VLT", labels = {"in:SHGC/VLT":"SHGC/VLT", 'out:Average DA':"Average DA"}, notched = True)
+    chep_bx_09 = px.box(CHEP, CHEP["in:ExWall"], CHEP['out:Average DA'], "in:ExWall", labels = {"in:ExWall":"ExWall", 'out:Average DA':"Average DA"}, notched = True)
+    chep_bx_10 = px.box(CHEP, CHEP["in:U-Value"], CHEP['out:Average DA'], "in:U-Value", labels = {"in:U-Value":"U-Value", 'out:Average DA':"Average DA"}, notched = True)
+    
+    cols = st.columns(5)
     
     with cols[0]:
-        st.plotly_chart(chep_bx_09, use_container_width=True)
+        st.plotly_chart(chep_bx_06, use_container_width=True)
     with cols[1]:
-        st.plotly_chart(chep_bx_10, use_container_width=True)
+        st.plotly_chart(chep_bx_07, use_container_width=True)
     with cols[2]:
-        st.plotly_chart(chep_bx_11, use_container_width=True)
+        st.plotly_chart(chep_bx_08, use_container_width=True)
     with cols[3]:
+        st.plotly_chart(chep_bx_09, use_container_width=True)
+    with cols[4]:
+        st.plotly_chart(chep_bx_10, use_container_width=True)
+    
+    chep_bx_11 = px.box(CHEP, CHEP["in:ExWall"], CHEP['out:Total KgCO2e'], "in:ExWall", labels = {"in:ExWall":"ExWall", 'out:Total KgCO2e':"Total KgCO2e"}, notched = True)
+    chep_bx_12 = px.box(CHEP, CHEP["in:ShadeDepth"], CHEP['out:Total KgCO2e'], "in:ShadeDepth", labels = {"in:ShadeDepth":"ShadeDepth", 'out:Total KgCO2e':"Total KgCO2e"}, notched = True)
+    chep_bx_13 = px.box(CHEP, CHEP["in:SHGC/VLT"], CHEP['out:Total KgCO2e'], "in:SHGC/VLT", labels = {"in:SHGC/VLT":"SHGC/VLT", 'out:Total KgCO2e':"Total KgCO2e"}, notched = True)
+    chep_bx_14 = px.box(CHEP, CHEP["in:ExWall"], CHEP['out:Total KgCO2e'], "in:ExWall", labels = {"in:ExWall":"ExWall", 'out:Total KgCO2e':"Total KgCO2e"}, notched = True)
+    chep_bx_15 = px.box(CHEP, CHEP["in:U-Value"], CHEP['out:Total KgCO2e'], "in:U-Value", labels = {"in:U-Value":"U-Value", 'out:Total KgCO2e':"Total KgCO2e"}, notched = True)
+    
+    cols = st.columns(5)
+    
+    with cols[0]:
+        st.plotly_chart(chep_bx_11, use_container_width=True)
+    with cols[1]:
         st.plotly_chart(chep_bx_12, use_container_width=True)
+    with cols[2]:
+        st.plotly_chart(chep_bx_13, use_container_width=True)
+    with cols[3]:
+        st.plotly_chart(chep_bx_14, use_container_width=True)
+    with cols[4]:
+        st.plotly_chart(chep_bx_15, use_container_width=True)
         
         
         
