@@ -11,7 +11,7 @@ CHEP = chep.drop('img', axis =1)
 
 
 with st.container():
-    st.dataframe(CHEP, use_container_width=True)
+    #st.dataframe(CHEP, use_container_width=True)
     chep_pcm = px.parallel_coordinates(CHEP, CHEP.columns, color="in:WWR",
                                        labels={"in:ShadeDepth": "in:ShadeDepth"},
                                        color_continuous_scale=px.colors.diverging.Tealrose,
