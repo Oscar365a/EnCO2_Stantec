@@ -5,7 +5,8 @@ import plotly.graph_objects as go
 
 st.set_page_config(page_title='Cairns Hospital Data Analysis', layout='wide')
 
-chep = pd.read_csv(r"C:\Users\atabadkani\Documents\projects\301050634_CairnsHospital\LBT\DE\R001\data.csv")
+chep = './data/CHEP.csv'
+
 CHEP = chep.drop('img', axis =1)
 
 
