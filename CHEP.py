@@ -28,7 +28,7 @@ with st.sidebar:
     
 with st.container():
      
-    st.header('Design Summary')
+    st.header('Design Selection Summary')
     
     def get_metrics():
        
