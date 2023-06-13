@@ -332,15 +332,14 @@ with st.container():
     with cols[3]:
         ""
 
-
-
 with st.container():
-    chep_bx_19 = px.box(CHEP_co2, CHEP_co2["WWR-NS"], CHEP_co2['WoL'], "WWR-NS", notched = True)
-    chep_bx_20 = px.box(CHEP_co2, CHEP_co2["WWR-EW"], CHEP_co2['WoL'], "WWR-EW", notched = True)
-    chep_bx_21 = px.box(CHEP_co2, CHEP_co2["ShadeDepth"], CHEP_co2['WoL'], "ShadeDepth",  notched = True)
-    chep_bx_22 = px.box(CHEP_co2, CHEP_co2["SHGC/VLT"], CHEP_co2['WoL'], "SHGC/VLT",notched = True)
-    chep_bx_23 = px.box(CHEP_co2, CHEP_co2["ExWall"], CHEP_co2['WoL'], "ExWall", notched = True)
-    chep_bx_24 = px.box(CHEP_co2, CHEP_co2["ShadeOrientation (0:V, 1:H)"], CHEP_co2['WoL'], "ShadeOrientation (0:V, 1:H)", notched = True)
+    
+    chep_bx_19 = px.box(CHEP_co2, CHEP_co2["WWR-NS"], CHEP_co2['Total kgCO2e'], "WWR-NS", notched = True)
+    chep_bx_20 = px.box(CHEP_co2, CHEP_co2["WWR-EW"], CHEP_co2['Total kgCO2e'], "WWR-EW", notched = True)
+    chep_bx_21 = px.box(CHEP_co2, CHEP_co2["ShadeDepth"], CHEP_co2['Total kgCO2e'], "ShadeDepth",  notched = True)
+    chep_bx_22 = px.box(CHEP_co2, CHEP_co2["SHGC/VLT"], CHEP_co2['Total kgCO2e'], "SHGC/VLT",notched = True)
+    chep_bx_23 = px.box(CHEP_co2, CHEP_co2["ExWall"], CHEP_co2['Total kgCO2e'], "ExWall", notched = True)
+    chep_bx_24 = px.box(CHEP_co2, CHEP_co2["ShadeOrientation (0:V, 1:H)"], CHEP_co2['Total kgCO2e'], "ShadeOrientation (0:V, 1:H)", notched = True)
         
     cols = st.columns(6)
     
@@ -356,5 +355,28 @@ with st.container():
         st.plotly_chart(chep_bx_23, use_container_width=True)
     with cols[5]:
         st.plotly_chart(chep_bx_24, use_container_width=True)  
+    
+    
+    chep_bx_24 = px.box(CHEP_co2, CHEP_co2["WWR-NS"], CHEP_co2['WoL'], "WWR-NS", notched = True)
+    chep_bx_25 = px.box(CHEP_co2, CHEP_co2["WWR-EW"], CHEP_co2['WoL'], "WWR-EW", notched = True)
+    chep_bx_26 = px.box(CHEP_co2, CHEP_co2["ShadeDepth"], CHEP_co2['WoL'], "ShadeDepth",  notched = True)
+    chep_bx_27 = px.box(CHEP_co2, CHEP_co2["SHGC/VLT"], CHEP_co2['WoL'], "SHGC/VLT",notched = True)
+    chep_bx_28 = px.box(CHEP_co2, CHEP_co2["ExWall"], CHEP_co2['WoL'], "ExWall", notched = True)
+    chep_bx_29 = px.box(CHEP_co2, CHEP_co2["ShadeOrientation (0:V, 1:H)"], CHEP_co2['WoL'], "ShadeOrientation (0:V, 1:H)", notched = True)
+        
+    cols = st.columns(6)
+    
+    with cols[0]:
+        st.plotly_chart(chep_bx_24, use_container_width=True)
+    with cols[1]:
+        st.plotly_chart(chep_bx_25, use_container_width=True)
+    with cols[2]:
+        st.plotly_chart(chep_bx_26, use_container_width=True)
+    with cols[3]:
+        st.plotly_chart(chep_bx_27, use_container_width=True)
+    with cols[4]:
+        st.plotly_chart(chep_bx_28, use_container_width=True)
+    with cols[5]:
+        st.plotly_chart(chep_bx_29, use_container_width=True)  
         
         
