@@ -1,16 +1,16 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from os import listdir
 from PIL import Image
-import numpy as np
 
 
 st.set_page_config(page_title='CAIRNS Hospital Data Analysis', layout='wide')
 
 CHEP_en = pd.read_csv('./data/Energy.csv')
+epic = pd.read_csv('./data/EPiC.xlsx')
 
 #CHEP_en = pd.read_csv(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\Energy.csv')
+#epic = pd.DataFrame(pd.read_excel(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\EPiC.xlsx'))
 
 st.title("Cairns Hospital Parametric Analysis")
 
@@ -21,7 +21,7 @@ with st.sidebar:
     WWR_NS = st.select_slider('Window-to-Wall Ratio (North-South):', options = [25, 50, 75], value = 50, key = 'WWR_NS')
     WWR_EW = st.select_slider('Window-to-Wall Ratio (East-West):', options = [25, 50, 75], value = 50, key = 'WWR_EW')
     Shade_dep = st.select_slider('Shade Depth (mm):', options = [0, 300, 600], value = 300, key = 'shadedepth')
-    Shade_ori = st.select_slider('Shade Orientation (0=Vert, 1=Horiz):', options = [0, 1], value = 0, key = 'shadeori')
+    Shade_ori = st.select_slider('Shade Orientation (0:V, 1:H):', options = [0, 1], value = 0, key = 'shadeori')
     SHGC_VLT = st.select_slider('SHGV/VLT:', options = ['0.22/30','0.45/50','0.7/65'], value = '0.45/50', key = 'glass_shgc')
     exwall = st.select_slider('External Wall R-value:', options = [1.0,1.4], value = 1.4, key = 'exwall_r')
     
@@ -30,7 +30,7 @@ with st.container():
      
     st.header('Design Selection Summary')
     
-    def get_metrics():
+    def get_metrics_EUI():
        
         CHEP_en_RESULT = CHEP_en[CHEP_en['WWR-NS'].isin([WWR_NS]) & CHEP_en['WWR-EW'].isin([WWR_EW]) & CHEP_en['ShadeDepth'].isin([Shade_dep]) & 
                          CHEP_en['ShadeOrientation (0:V, 1:H)'].isin([Shade_ori]) & CHEP_en['SHGC/VLT'].isin([SHGC_VLT]) & CHEP_en['ExWall'].isin([exwall])]
@@ -52,26 +52,26 @@ with st.container():
     with cols[0]:
         ""
     with cols[1]:
-        st.metric('EUI(kWh/m2)', get_metrics()[0])
+        st.metric('EUI(kWh/m2)', get_metrics_EUI()[0])
     with cols[2]:
-        st.metric('HVACp (W/m2)', get_metrics()[1])
+        st.metric('HVACp (W/m2)', get_metrics_EUI()[1])
     with cols[3]:
-        st.metric('Average DA% (500lx)', get_metrics()[2])
+        st.metric('Average DA% (500lx)', get_metrics_EUI()[2])
     with cols[4]:
-        st.metric('Average UDI% (>10000lx)', get_metrics()[3])
+        st.metric('Average UDI% (>10000lx)', get_metrics_EUI()[3])
     with cols[5]:
-        st.metric('Cost ($ kWh/yr)', get_metrics()[4])
+        st.metric('Cost ($ kWh/yr)', get_metrics_EUI()[4])
     with cols[6]:
-        st.metric('Patient North% (> OT 27C)', get_metrics()[5])
+        st.metric('Patient North% (> OT 27C)', get_metrics_EUI()[5])
     with cols[7]:
-        st.metric('Patient South% (> OT 27C)', get_metrics()[6])
+        st.metric('Patient South% (> OT 27C)', get_metrics_EUI()[6])
     with cols[8]:
         ""
         
     def loadImages():
       
-        img = Image.open(f'./data/images/{get_metrics()[7].iloc[0]}')
-    
+        #img = Image.open(rf'C:\Users\atabadkani\Streamlit Apps\CHEP\data\images\{get_metrics_EUI()[7].iloc[0]}')
+        img = Image.open(f'./data/images/{get_metrics_EUI()[7].iloc[0]}')
         return img
     
     col1,col2,col3 = st.columns([1.5,4,0.5])
@@ -93,7 +93,9 @@ with st.container():
     chep_pcm.update_layout(coloraxis_showscale=False)
          
     st.plotly_chart(chep_pcm, use_container_width=True)
-   
+    
+
+    
     chep_bx_01 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["EUI(kWh/m2)"], "WWR-NS", notched = True)
     chep_bx_02 = px.box(CHEP_en, CHEP_en["WWR-EW"], CHEP_en["EUI(kWh/m2)"], "WWR-EW", notched = True)
     chep_bx_03 = px.box(CHEP_en, CHEP_en["ShadeDepth"], CHEP_en["EUI(kWh/m2)"], "ShadeDepth", notched = True)
@@ -139,7 +141,27 @@ with st.container():
         st.plotly_chart(chep_bx_12, use_container_width=True)
         
 
-epic = pd.DataFrame(pd.read_excel('./data/EPiC.xlsx'))
+    chep_bx_13 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["Average UDI"], "WWR-NS", notched = True)
+    chep_bx_14 = px.box(CHEP_en, CHEP_en["WWR-EW"], CHEP_en["Average UDI"], "WWR-EW", notched = True)
+    chep_bx_15 = px.box(CHEP_en, CHEP_en["ShadeDepth"], CHEP_en['Average UDI'], "ShadeDepth",  notched = True)
+    chep_bx_16 = px.box(CHEP_en, CHEP_en["SHGC/VLT"], CHEP_en['Average UDI'], "SHGC/VLT",  notched = True)
+    chep_bx_17 = px.box(CHEP_en, CHEP_en["ExWall"], CHEP_en['Average UDI'], "ExWall", notched = True)
+    chep_bx_18 = px.box(CHEP_en, CHEP_en["ShadeOrientation (0:V, 1:H)"], CHEP_en['Average UDI'], "ShadeOrientation (0:V, 1:H)",notched = True)
+    
+    cols = st.columns(6)
+    
+    with cols[0]:
+        st.plotly_chart(chep_bx_13, use_container_width=True)
+    with cols[1]:
+        st.plotly_chart(chep_bx_14, use_container_width=True)
+    with cols[2]:
+        st.plotly_chart(chep_bx_15, use_container_width=True)
+    with cols[3]:
+        st.plotly_chart(chep_bx_16, use_container_width=True)
+    with cols[4]:
+        st.plotly_chart(chep_bx_17, use_container_width=True)
+    with cols[5]:
+        st.plotly_chart(chep_bx_18, use_container_width=True)
 
        
 def get_index(df) -> dict:
@@ -224,7 +246,7 @@ with st.container():
     
     st.subheader("**Design Inputs vs. Building Whole of Life Performance**")
 
-    chep_co2 = pd.read_csv('./data/CO2.csv')
+    chep_co2 = pd.read_csv(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\CO2.csv')
     
     CHEP_co2 = chep_co2.drop('img', axis =1)  
     
@@ -271,8 +293,10 @@ with st.container():
     
     CHEP_co2['WoL'] = ((CHEP_co2['EUI (kWh/m2)'].iloc[i]*Floor_area*grid_factor*num_years)+round(calc_df['Total'],2))
     
+    CHEP_co2['Total kgCO2e'] = calc_df['Total']
+    
     chep_pcm_co = px.parallel_coordinates(CHEP_co2, ['WWR-NS', 'WWR-EW', 'ShadeDepth', 'ShadeOrientation (0:V, 1:H)',
-       'SHGC/VLT', 'ExWall', 'WoL','EUI (kWh/m2)'], color='EUI (kWh/m2)',
+       'SHGC/VLT', 'ExWall', 'Total kgCO2e', 'WoL','EUI (kWh/m2)'], color='EUI (kWh/m2)',
                                         labels={"ShadeDepth": "ShadeDepth", "ExWall":"ExWall"},
                                         color_continuous_scale=px.colors.cyclical.HSV,
                                         color_continuous_midpoint=100, height = 650)
@@ -283,27 +307,54 @@ with st.container():
          
     st.plotly_chart(chep_pcm_co, use_container_width=True)
 
+
 with st.container():
-    chep_bx_13 = px.box(CHEP_co2, CHEP_co2["WWR-NS"], CHEP_co2['WoL'], "WWR-NS", notched = True)
-    chep_bx_14 = px.box(CHEP_co2, CHEP_co2["WWR-EW"], CHEP_co2['WoL'], "WWR-EW", notched = True)
-    chep_bx_15 = px.box(CHEP_co2, CHEP_co2["ShadeDepth"], CHEP_co2['WoL'], "ShadeDepth",  notched = True)
-    chep_bx_16 = px.box(CHEP_co2, CHEP_co2["SHGC/VLT"], CHEP_co2['WoL'], "SHGC/VLT",notched = True)
-    chep_bx_17 = px.box(CHEP_co2, CHEP_co2["ExWall"], CHEP_co2['WoL'], "ExWall", notched = True)
-    chep_bx_18 = px.box(CHEP_co2, CHEP_co2["ShadeOrientation (0:V, 1:H)"], CHEP_co2['WoL'], "ShadeOrientation (0:V, 1:H)", notched = True)
+     
+    
+    def get_metrics_CO2():
+       
+        CHEP_co2_RESULT = CHEP_co2[CHEP_co2['WWR-NS'].isin([WWR_NS]) & CHEP_co2['WWR-EW'].isin([WWR_EW]) & CHEP_co2['ShadeDepth'].isin([Shade_dep]) & 
+                         CHEP_co2['ShadeOrientation (0:V, 1:H)'].isin([Shade_ori]) & CHEP_co2['SHGC/VLT'].isin([SHGC_VLT]) & CHEP_co2['ExWall'].isin([exwall])]
+        
+        TotalCO2 = CHEP_co2_RESULT['Total kgCO2e']
+        WoL_ = CHEP_co2_RESULT['WoL']
+        
+        
+        return TotalCO2, WoL_
+            
+    cols = st.columns(4)
+    with cols[0]:
+        ""
+    with cols[1]:
+        st.metric('Embodied CO2 (kgCO2e)', get_metrics_CO2()[0])
+    with cols[2]:
+        st.metric(f'Whole of Life (kgCO2e/{num_years}yrs)', round(get_metrics_CO2()[1],2))
+    with cols[3]:
+        ""
+
+
+
+with st.container():
+    chep_bx_19 = px.box(CHEP_co2, CHEP_co2["WWR-NS"], CHEP_co2['WoL'], "WWR-NS", notched = True)
+    chep_bx_20 = px.box(CHEP_co2, CHEP_co2["WWR-EW"], CHEP_co2['WoL'], "WWR-EW", notched = True)
+    chep_bx_21 = px.box(CHEP_co2, CHEP_co2["ShadeDepth"], CHEP_co2['WoL'], "ShadeDepth",  notched = True)
+    chep_bx_22 = px.box(CHEP_co2, CHEP_co2["SHGC/VLT"], CHEP_co2['WoL'], "SHGC/VLT",notched = True)
+    chep_bx_23 = px.box(CHEP_co2, CHEP_co2["ExWall"], CHEP_co2['WoL'], "ExWall", notched = True)
+    chep_bx_24 = px.box(CHEP_co2, CHEP_co2["ShadeOrientation (0:V, 1:H)"], CHEP_co2['WoL'], "ShadeOrientation (0:V, 1:H)", notched = True)
         
     cols = st.columns(6)
     
     with cols[0]:
-        st.plotly_chart(chep_bx_13, use_container_width=True)
+        st.plotly_chart(chep_bx_19, use_container_width=True)
     with cols[1]:
-        st.plotly_chart(chep_bx_14, use_container_width=True)
+        st.plotly_chart(chep_bx_20, use_container_width=True)
     with cols[2]:
-        st.plotly_chart(chep_bx_15, use_container_width=True)
+        st.plotly_chart(chep_bx_21, use_container_width=True)
     with cols[3]:
-        st.plotly_chart(chep_bx_16, use_container_width=True)
+        st.plotly_chart(chep_bx_22, use_container_width=True)
     with cols[4]:
-        st.plotly_chart(chep_bx_17, use_container_width=True)
+        st.plotly_chart(chep_bx_23, use_container_width=True)
     with cols[5]:
-        st.plotly_chart(chep_bx_18, use_container_width=True)  
+        st.plotly_chart(chep_bx_24, use_container_width=True)  
         
         
