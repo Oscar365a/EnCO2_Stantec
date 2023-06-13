@@ -322,7 +322,7 @@ with st.container():
         
         return TotalCO2, WoL_
             
-    cols = st.columns(4)
+    cols = st.columns(5)
     with cols[0]:
         ""
     with cols[1]:
