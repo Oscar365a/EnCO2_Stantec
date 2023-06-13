@@ -312,15 +312,15 @@ with st.container():
      
     
     def get_metrics_CO2():
-       
+
         CHEP_co2_RESULT = CHEP_co2[CHEP_co2['WWR-NS'].isin([WWR_NS]) & CHEP_co2['WWR-EW'].isin([WWR_EW]) & CHEP_co2['ShadeDepth'].isin([Shade_dep]) & 
-                         CHEP_co2['ShadeOrientation (0:V, 1:H)'].isin([Shade_ori]) & CHEP_co2['SHGC/VLT'].isin([SHGC_VLT]) & CHEP_co2['ExWall'].isin([exwall])]
-        
+                             CHEP_co2['ShadeOrientation (0:V, 1:H)'].isin([Shade_ori]) & CHEP_co2['SHGC/VLT'].isin([SHGC_VLT]) & CHEP_co2['ExWall'].isin([exwall])]
+
         TotalCO2 = CHEP_co2_RESULT['Total kgCO2e']
         WoL_ = CHEP_co2_RESULT['WoL']
-        
-        
-        return TotalCO2, WoL_
+        EUI4co2 = CHEP_co2_RESULT['EUI (kWh/m2)']
+
+        return TotalCO2, WoL_, EUI4co2, CHEP_co2_RESULT
             
     cols = st.columns(5)
     with cols[0]:
@@ -333,7 +333,19 @@ with st.container():
         st.metric('Embodied % WoL', round((round(get_metrics_CO2()[0],2) / round(get_metrics_CO2()[1],2))*100,2))
     with cols[4]:
         ""
+
 with st.container():
+    
+    cols = st.columns(3)
+    with cols[0]:
+        ""
+    with cols[1]: 
+        chep_pie_co2 = px.pie(color_discrete_sequence=px.colors.sequential.RdBu, 
+                              names =['Total Embodied', 'EUI', 'WoL'], values = [get_metrics_CO2()[0].iloc[0],get_metrics_CO2()[2].iloc[0]*Floor_area*grid_factor*num_years,get_metrics_CO2()[1].iloc[0]])
+        chep_pie_co2.update_traces(textposition='inside', textinfo='percent+label')
+        st.plotly_chart(chep_pie_co2,use_container_width=True)
+    with cols[2]:
+        ""
     
     chep_bx_19 = px.box(CHEP_co2, CHEP_co2["WWR-NS"], CHEP_co2['Total kgCO2e'], "WWR-NS", notched = True)
     chep_bx_20 = px.box(CHEP_co2, CHEP_co2["WWR-EW"], CHEP_co2['Total kgCO2e'], "WWR-EW", notched = True)
