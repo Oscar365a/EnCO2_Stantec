@@ -195,7 +195,7 @@ with st.sidebar:
     st.markdown(f'**Unit: {PB_unit} | Emission Factor (kgCO₂e): {PB_em}**')
     PB_density = st.number_input('Plaster Board Density', min_value=50, max_value=1500, value = 700)
 
-    Glass = epic[epic['Version: EPiC Database 2019'].str.contains('glazing')]
+    Glass = epic[epic['Version: EPiC Database 2019'].str.contains('glazing | glass')]
     Glass = Glass[Glass['Functional unit'] !='no.']
     Glass_type = Glass['Version: EPiC Database 2019'].iloc[:]
     
@@ -322,7 +322,7 @@ with st.container():
 
         return TotalCO2, WoL_, EUI4co2, CHEP_co2_RESULT
             
-    cols = st.columns(5)
+    cols = st.columns(4)
     with cols[0]:
         ""
     with cols[1]:
@@ -330,8 +330,6 @@ with st.container():
     with cols[2]:
         st.metric(f'Whole of Life (kgCO2e/{num_years}yrs)', round(get_metrics_CO2()[1],2))
     with cols[3]:
-        st.metric('Embodied % WoL', round((round(get_metrics_CO2()[0],2) / round(get_metrics_CO2()[1],2))*100,2))
-    with cols[4]:
         ""
 
 with st.container():
@@ -341,7 +339,7 @@ with st.container():
         ""
     with cols[1]: 
         chep_pie_co2 = px.pie(color_discrete_sequence=px.colors.sequential.RdBu, 
-                              names =['Total Embodied', 'EUI', 'WoL'], values = [get_metrics_CO2()[0].iloc[0],get_metrics_CO2()[2].iloc[0]*Floor_area*grid_factor*num_years,get_metrics_CO2()[1].iloc[0]])
+                              names =['Upfront Carbon', 'Operational Carbon'], values = [get_metrics_CO2()[0].iloc[0],get_metrics_CO2()[2].iloc[0]*Floor_area*grid_factor*num_years,])
         chep_pie_co2.update_traces(textposition='inside', textinfo='percent+label')
         st.plotly_chart(chep_pie_co2,use_container_width=True)
     with cols[2]:
