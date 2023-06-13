@@ -3,8 +3,10 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+import math
 
-st.set_page_config(page_title='Cairns Hospital Data Analysis', layout='wide')
+
+st.set_page_config(page_title='CAIRNS Hospital Data Analysis', layout='wide')
 
 # chep_en = pd.read_csv('./data/Energy.csv')
 
@@ -80,26 +82,28 @@ def get_index(df) -> dict:
 
 with st.sidebar:
     
-    st.title('Please Choose the Material Type:')
+    st.title('Choose the Material Type:')
     
     concrete = epic[epic['Version: EPiC Database 2019'].str.contains('Concrete|AAC')]
     concrete = concrete[concrete['Functional unit'] !='no.']
     concrete_type = concrete['Version: EPiC Database 2019'].iloc[:]
     
-    concrete_selection = st.selectbox('Concrete:', options=concrete_type, key='concrete', index = 2)
+    concrete_selection = st.selectbox('Concrete:', options=concrete_type, key='concrete', index = 2)   
     concrete_unit = concrete['Functional unit'].iloc[int(get_index(concrete)[concrete_selection])]
     concrete_em = concrete['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(concrete)[concrete_selection])]
-    st.markdown(f'Unit: {concrete_unit} | Emission Factor (kgCO₂e): {concrete_em}')
-    
+    st.markdown(f'**Unit: {concrete_unit} | Emission Factor (kgCO₂e): {concrete_em}**')
+    concerte_density = st.number_input('Concrete Density', min_value=100, max_value=3000, value = 2300)
+
     
     PB = epic[epic['Version: EPiC Database 2019'].str.contains('Plaster|plaster')]
     PB = PB[PB['Functional unit'] !='no.']
     PB_type = PB['Version: EPiC Database 2019'].iloc[:]
     
-    PB_selection = st.selectbox('Plaster Board:', options=PB_type, key='PB', index = 1)
+    PB_selection = st.selectbox('Plaster Board:', options=PB_type, key='PB', index = 1)    
     PB_unit = PB['Functional unit'].iloc[int(get_index(PB)[PB_selection])]
     PB_em = PB['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(PB)[PB_selection])]
-    st.markdown(f'Unit: {PB_unit} | Emission Factor (kgCO₂e): {PB_em}')
+    st.markdown(f'**Unit: {PB_unit} | Emission Factor (kgCO₂e): {PB_em}**')
+    PB_density = st.number_input('Plaster Board Density', min_value=50, max_value=1500, value = 700)
 
     Glass = epic[epic['Version: EPiC Database 2019'].str.contains('glazing')]
     Glass = Glass[Glass['Functional unit'] !='no.']
@@ -108,45 +112,55 @@ with st.sidebar:
     Glass_selection = st.selectbox('Glass Type:', options=Glass_type, key='Glass', index = 1)
     Glass_unit = Glass['Functional unit'].iloc[int(get_index(Glass)[Glass_selection])]
     Glass_em = Glass['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(Glass)[Glass_selection])]
-    st.markdown(f'Unit: {Glass_unit} | Emission Factor (kgCO₂e): {Glass_em}')
+    st.markdown(f'**Unit: {Glass_unit} | Emission Factor (kgCO₂e): {Glass_em}**')
     
-    insul = epic[epic['Version: EPiC Database 2019'].str.contains('insulation')]
-    insul = insul[insul['Functional unit'] !='no.']
-    insul_type = insul['Version: EPiC Database 2019'].iloc[:]
+    # insul = epic[epic['Version: EPiC Database 2019'].str.contains('insulation')]
+    # insul = insul[insul['Functional unit'] !='no.']
+    # insul_type = insul['Version: EPiC Database 2019'].iloc[:]
     
-    insul_selection = st.selectbox('Insulation Type:', options=insul_type, key='insul', index = 1)
-    insul_unit = insul['Functional unit'].iloc[int(get_index(insul)[insul_selection])]
-    insul_em = insul['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(insul)[insul_selection])]
-    st.markdown(f'Unit: {insul_unit} | Emission Factor (kgCO₂e): {insul_em}')
+    # insul_selection = st.selectbox('Insulation Type:', options=insul_type, key='insul', index = 1)
+    # insul_unit = insul['Functional unit'].iloc[int(get_index(insul)[insul_selection])]
+    # insul_em = insul['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(insul)[insul_selection])]
+    # st.markdown(f'Unit: {insul_unit} | Emission Factor (kgCO₂e): {insul_em}')
     
     alum = epic[epic['Version: EPiC Database 2019'].str.contains('Aluminium')]
     alum = alum[alum['Functional unit'] !='no.']
     alum_type = alum['Version: EPiC Database 2019'].iloc[:]
     
-    alum_selection = st.selectbox('Aluminimum Type:', options=alum_type, key='alum', index = 4)
+    alum_selection = st.selectbox('Aluminium Type:', options=alum_type, key='alum', index = 4)
     alum_unit = alum['Functional unit'].iloc[int(get_index(alum)[alum_selection])]
     alum_em = alum['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(alum)[alum_selection])]
-    st.markdown(f'Unit: {alum_unit} | Emission Factor (kgCO₂e): {alum_em}')
+    st.markdown(f'**Unit: {alum_unit} | Emission Factor (kgCO₂e): {alum_em}**')
     
-
+    
+with st.sidebar:
+    Floor_area = 2310.5  ##########
+    
+    st.title('Choose the Grid Emission Scenario:')
+    
+    scenario = st.selectbox('Scenario:', options=['Scenario One', 'Scenario Two'], key='grid')
+    
+    num_years = st.number_input('Years to Predict WoL:', min_value=1, max_value=20, value = 7)
+    
+    if scenario == 'Scenario One':
+        grid_factor = (math.log(num_years)*-0.147) + 0.9121
+    
+    elif scenario == 'Scenario Two':
+        grid_factor = (math.log(num_years)*-0.309) + 0.9413
+    
+    st.markdown(f'**Grid Emission Factor is {round(grid_factor,2)}.**')
+    
 with st.container():
 
     chep_co2 = pd.read_csv(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\CO2.csv')
     
-    CHEP_co2 = chep_co2.drop('img', axis =1)
-  
-    CHEP_co2.columns
+    CHEP_co2 = chep_co2.drop('img', axis =1)  
     
-    WoL = []
     concrete_calc = []
     PB_calc = []
     Glass_calc = []
     alum_calc  = []
-    concerte_density = 2300 #########
-    PB_density = 700 #########
-    Floor_area = 2310.5  ##########
-    grid_factor = 0.85 ###########
-    num_years = 20 ######
+    
     
     for i in range(0, len(CHEP_co2)):
         if concrete_unit == 'm³':
@@ -177,42 +191,47 @@ with st.container():
         if alum_unit == 'm²':
             alum_vol = CHEP_co2['Shades Area m2'].iloc[i]*alum_em
             alum_calc.append(alum_vol)
-        
-        Total_vol_emission = concrete_calc+PB_calc+Glass_calc+alum_calc
-        WoL = ((CHEP_co2['EUI (kWh/m2)'].iloc[i]*Floor_area*grid_factor)+Total_vol_emission)*num_years
-        # WoL.append(WoL)
-    WoL
-    Total_vol_emission
-    # CHEP_co2['WoL'] = WoL
-        
-    # CHEP_co2   
-        
-    # chep_pcm = px.parallel_coordinates(CHEP_en, CHEP_en.columns, color="EUI(kWh/m2)",
-    #                                    labels={"ShadeDepth": "ShadeDepth", "ExWall":"ExWall"},
-    #                                    color_continuous_scale=px.colors.diverging.Tealrose,
-    #                                    color_continuous_midpoint=2, height = 650)
-
-# with st.container():
-#     chep_bx_13 = px.box(CHEP_co2, CHEP_co2["WWR-NS"], CHEP_co2["Total KgCO2e"], "WWR-NS", notched = True)
-#     chep_bx_14 = px.box(CHEP_co2, CHEP_co2["WWR-EW"], CHEP_co2["Total KgCO2e"], "WWR-EW", notched = True)
-#     chep_bx_15 = px.box(CHEP_co2, CHEP_co2["ShadeDepth"], CHEP_co2['Total KgCO2e'], "ShadeDepth",  notched = True)
-#     chep_bx_16 = px.box(CHEP_co2, CHEP_co2["SHGC/VLT"], CHEP_co2['Total KgCO2e'], "SHGC/VLT",notched = True)
-#     chep_bx_17 = px.box(CHEP_co2, CHEP_co2["ExWall"], CHEP_co2['Total KgCO2e'], "ExWall", notched = True)
-#     chep_bx_18 = px.box(CHEP_co2, CHEP_co2["ShadeOrientation (0:V, 1:H)"], CHEP_co2['Total KgCO2e'], "ShadeOrientation (0:V, 1:H)", notched = True)
-        
-#     cols = st.columns(6)
     
-#     with cols[0]:
-#         st.plotly_chart(chep_bx_13, use_container_width=True)
-#     with cols[1]:
-#         st.plotly_chart(chep_bx_14, use_container_width=True)
-#     with cols[2]:
-#         st.plotly_chart(chep_bx_15, use_container_width=True)
-#     with cols[3]:
-#         st.plotly_chart(chep_bx_16, use_container_width=True)
-#     with cols[4]:
-#         st.plotly_chart(chep_bx_17, use_container_width=True)
-#     with cols[5]:
-#         st.plotly_chart(chep_bx_18, use_container_width=True)  
+    calc_df_raw = pd.DataFrame([concrete_calc , PB_calc,Glass_calc,alum_calc])
+    calc_df = calc_df_raw.transpose()
+    calc_df = calc_df.rename(columns={0:'concrete_calc', 1:'PB_calc',2:'Glass_calc',3:'alum_calc'})
+    calc_df['Total'] = calc_df['concrete_calc']+calc_df['PB_calc']+calc_df['Glass_calc']+calc_df['alum_calc']
+    
+    CHEP_co2['WoL'] = ((CHEP_co2['EUI (kWh/m2)'].iloc[i]*Floor_area*grid_factor)+round(calc_df['Total'],2))*num_years 
+    
+    chep_pcm_co = px.parallel_coordinates(CHEP_co2, ['WWR-NS', 'WWR-EW', 'ShadeDepth', 'ShadeOrientation (0:V, 1:H)',
+       'SHGC/VLT', 'ExWall', 'WoL','EUI (kWh/m2)'], color='EUI (kWh/m2)',
+                                        labels={"ShadeDepth": "ShadeDepth", "ExWall":"ExWall"},
+                                        color_continuous_scale=px.colors.diverging.Tealrose,
+                                        color_continuous_midpoint=2, height = 650)
+
+    
+    
+    chep_pcm_co.update_layout(coloraxis_showscale=False)
+         
+    st.plotly_chart(chep_pcm_co, use_container_width=True)
+
+with st.container():
+    chep_bx_13 = px.box(CHEP_co2, CHEP_co2["WWR-NS"], CHEP_co2['WoL'], "WWR-NS", notched = True)
+    chep_bx_14 = px.box(CHEP_co2, CHEP_co2["WWR-EW"], CHEP_co2['WoL'], "WWR-EW", notched = True)
+    chep_bx_15 = px.box(CHEP_co2, CHEP_co2["ShadeDepth"], CHEP_co2['WoL'], "ShadeDepth",  notched = True)
+    chep_bx_16 = px.box(CHEP_co2, CHEP_co2["SHGC/VLT"], CHEP_co2['WoL'], "SHGC/VLT",notched = True)
+    chep_bx_17 = px.box(CHEP_co2, CHEP_co2["ExWall"], CHEP_co2['WoL'], "ExWall", notched = True)
+    chep_bx_18 = px.box(CHEP_co2, CHEP_co2["ShadeOrientation (0:V, 1:H)"], CHEP_co2['WoL'], "ShadeOrientation (0:V, 1:H)", notched = True)
+        
+    cols = st.columns(6)
+    
+    with cols[0]:
+        st.plotly_chart(chep_bx_13, use_container_width=True)
+    with cols[1]:
+        st.plotly_chart(chep_bx_14, use_container_width=True)
+    with cols[2]:
+        st.plotly_chart(chep_bx_15, use_container_width=True)
+    with cols[3]:
+        st.plotly_chart(chep_bx_16, use_container_width=True)
+    with cols[4]:
+        st.plotly_chart(chep_bx_17, use_container_width=True)
+    with cols[5]:
+        st.plotly_chart(chep_bx_18, use_container_width=True)  
         
         
