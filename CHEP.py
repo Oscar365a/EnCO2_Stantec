@@ -70,7 +70,7 @@ with st.container():
         
     def loadImages():
       
-        img = Image.open(f'.data/images/{get_metrics()[7].iloc[0]}')
+        img = Image.open(f'./data/images/{get_metrics()[7].iloc[0]}')
     
         return img
     
