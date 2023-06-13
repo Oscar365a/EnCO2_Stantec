@@ -1,31 +1,99 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import math
+from os import listdir
+from PIL import Image
+import numpy as np
 
 
 st.set_page_config(page_title='CAIRNS Hospital Data Analysis', layout='wide')
 
-# chep_en = pd.read_csv('./data/Energy.csv')
+CHEP_en = pd.read_csv('./data/Energy.csv')
 
-chep_en = pd.read_csv(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\Energy.csv')
-
-CHEP_en = chep_en.drop('img', axis =1)
+#CHEP_en = pd.read_csv(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\Energy.csv')
 
 st.title("Cairns Hospital Parametric Analysis")
 
+with st.sidebar:
+    
+    st.title('Choose the Design Inputs:')
+    
+    WWR_NS = st.select_slider('Window-to-Wall Ratio (North-South):', options = [25, 50, 75], value = 50, key = 'WWR_NS')
+    WWR_EW = st.select_slider('Window-to-Wall Ratio (East-West):', options = [25, 50, 75], value = 50, key = 'WWR_EW')
+    Shade_dep = st.select_slider('Shade Depth (mm):', options = [0, 300, 600], value = 300, key = 'shadedepth')
+    Shade_ori = st.select_slider('Shade Orientation (0:V, 1:H):', options = [0, 1], value = 0, key = 'shadeori')
+    SHGC_VLT = st.select_slider('SHGV/VLT:', options = ['0.22/30','0.45/50','0.7/65'], value = '0.45/50', key = 'glass_shgc')
+    exwall = st.select_slider('External Wall R-value:', options = [1.0,1.4], value = 1.4, key = 'exwall_r')
+    
+    
 with st.container():
-    # st.dataframe(CHEP, use_container_width=True)
+     
+    st.header('Design Summary')
+    
+    def get_metrics():
+       
+        CHEP_en_RESULT = CHEP_en[CHEP_en['WWR-NS'].isin([WWR_NS]) & CHEP_en['WWR-EW'].isin([WWR_EW]) & CHEP_en['ShadeDepth'].isin([Shade_dep]) & 
+                         CHEP_en['ShadeOrientation (0:V, 1:H)'].isin([Shade_ori]) & CHEP_en['SHGC/VLT'].isin([SHGC_VLT]) & CHEP_en['ExWall'].isin([exwall])]
+        
+        EUI_METRIC = CHEP_en_RESULT['EUI(kWh/m2)']
+        NORM_HVAC = CHEP_en_RESULT['Normalized HVACp (W/m2)']
+        AVE_DA =  CHEP_en_RESULT['Average DA']
+        AVE_UDI = CHEP_en_RESULT['Average UDI']
+        ENERGY = CHEP_en_RESULT['Energy Cost ($ kWh/yr)']
+        PATIENT_NORTH_OT = CHEP_en_RESULT['OT27% - Patient North']
+        PATIENT_SOUTH_OT = CHEP_en_RESULT['OT27% - Patient South']
+        image = CHEP_en_RESULT['img']
+        
+        return EUI_METRIC, NORM_HVAC, AVE_DA, AVE_UDI, ENERGY, PATIENT_NORTH_OT, PATIENT_SOUTH_OT, image
+            
+    
+        
+    cols = st.columns(9)
+    with cols[0]:
+        ""
+    with cols[1]:
+        st.metric('EUI(kWh/m2)', get_metrics()[0])
+    with cols[2]:
+        st.metric('HVACp (W/m2)', get_metrics()[1])
+    with cols[3]:
+        st.metric('Average DA% (500lx)', get_metrics()[2])
+    with cols[4]:
+        st.metric('Average UDI% (>10000lx)', get_metrics()[3])
+    with cols[5]:
+        st.metric('Cost ($ kWh/yr)', get_metrics()[4])
+    with cols[6]:
+        st.metric('Patient North% (> OT 27C)', get_metrics()[5])
+    with cols[7]:
+        st.metric('Patient South% (> OT 27C)', get_metrics()[6])
+    with cols[8]:
+        ""
+        
+    def loadImages():
+      
+        img = Image.open(f'.data/images/{get_metrics()[7].iloc[0]}')
+    
+        return img
+    
+    col1,col2,col3 = st.columns([1.5,4,0.5])
+    
+    with col1:
+        ""
+    with col2:
+        st.image(loadImages(), caption='Selected Design Iteration', use_column_width = False)
+    
+    
+    
+    st.subheader("**Design Inputs vs. Operational Building Performance**")
+
     chep_pcm = px.parallel_coordinates(CHEP_en, CHEP_en.columns, color="EUI(kWh/m2)",
                                        labels={"ShadeDepth": "ShadeDepth", "ExWall":"ExWall"},
-                                       color_continuous_scale=px.colors.diverging.Tealrose,
+                                       color_continuous_scale=px.colors.cyclical.Edge,
                                        color_continuous_midpoint=2, height = 650)
     
     chep_pcm.update_layout(coloraxis_showscale=False)
          
     st.plotly_chart(chep_pcm, use_container_width=True)
-    
-    
+   
     chep_bx_01 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["EUI(kWh/m2)"], "WWR-NS", notched = True)
     chep_bx_02 = px.box(CHEP_en, CHEP_en["WWR-EW"], CHEP_en["EUI(kWh/m2)"], "WWR-EW", notched = True)
     chep_bx_03 = px.box(CHEP_en, CHEP_en["ShadeDepth"], CHEP_en["EUI(kWh/m2)"], "ShadeDepth", notched = True)
@@ -71,7 +139,7 @@ with st.container():
         st.plotly_chart(chep_bx_12, use_container_width=True)
         
 
-epic = pd.DataFrame(pd.read_excel(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\EPiC.xlsx'))
+epic = pd.DataFrame(pd.read_excel('./data/EPiC.xlsx'))
 
        
 def get_index(df) -> dict:
@@ -125,7 +193,7 @@ with st.sidebar:
     alum = alum[alum['Functional unit'] !='no.']
     alum_type = alum['Version: EPiC Database 2019'].iloc[:]
     
-    alum_selection = st.selectbox('Aluminium Type:', options=alum_type, key='alum', index = 4)
+    alum_selection = st.selectbox('Aluminium Type:', options=alum_type, key='alum', index = 20)
     alum_unit = alum['Functional unit'].iloc[int(get_index(alum)[alum_selection])]
     alum_em = alum['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(alum)[alum_selection])]
     st.markdown(f'**Unit: {alum_unit} | Emission Factor (kgCO₂e): {alum_em}**')
@@ -140,17 +208,23 @@ with st.sidebar:
     
     num_years = st.number_input('Years to Predict WoL:', min_value=1, max_value=20, value = 7)
     
+    def ln(x):
+        n = 1000.0
+        return n * ((x ** (1/n)) - 1)
+
     if scenario == 'Scenario One':
-        grid_factor = (math.log(num_years)*-0.147) + 0.9121
+        grid_factor = (ln(num_years)*-0.147) + 0.9121
     
     elif scenario == 'Scenario Two':
-        grid_factor = (math.log(num_years)*-0.309) + 0.9413
+        grid_factor = (ln(num_years)*-0.309) + 0.9413
     
     st.markdown(f'**Grid Emission Factor is {round(grid_factor,2)}.**')
     
 with st.container():
+    
+    st.subheader("**Design Inputs vs. Building Whole of Life Performance**")
 
-    chep_co2 = pd.read_csv(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\CO2.csv')
+    chep_co2 = pd.read_csv('./data/CO2.csv')
     
     CHEP_co2 = chep_co2.drop('img', axis =1)  
     
@@ -195,13 +269,13 @@ with st.container():
     calc_df = calc_df.rename(columns={0:'concrete_calc', 1:'PB_calc',2:'Glass_calc',3:'alum_calc'})
     calc_df['Total'] = calc_df['concrete_calc']+calc_df['PB_calc']+calc_df['Glass_calc']+calc_df['alum_calc']
     
-    CHEP_co2['WoL'] = ((CHEP_co2['EUI (kWh/m2)'].iloc[i]*Floor_area*grid_factor)+round(calc_df['Total'],2))*num_years 
+    CHEP_co2['WoL'] = ((CHEP_co2['EUI (kWh/m2)'].iloc[i]*Floor_area*grid_factor*num_years)+round(calc_df['Total'],2))
     
     chep_pcm_co = px.parallel_coordinates(CHEP_co2, ['WWR-NS', 'WWR-EW', 'ShadeDepth', 'ShadeOrientation (0:V, 1:H)',
        'SHGC/VLT', 'ExWall', 'WoL','EUI (kWh/m2)'], color='EUI (kWh/m2)',
                                         labels={"ShadeDepth": "ShadeDepth", "ExWall":"ExWall"},
-                                        color_continuous_scale=px.colors.diverging.Tealrose,
-                                        color_continuous_midpoint=2, height = 650)
+                                        color_continuous_scale=px.colors.cyclical.HSV,
+                                        color_continuous_midpoint=100, height = 650)
 
     
     
