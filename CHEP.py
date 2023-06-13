@@ -8,9 +8,11 @@ st.set_page_config(page_title='CAIRNS Hospital Data Analysis', layout='wide')
 
 CHEP_en = pd.read_csv('./data/Energy.csv')
 epic = pd.read_csv('./data/EPiC.xlsx')
+chep_co2 = pd.read_csv(r'./data/CO2.csv')
 
 #CHEP_en = pd.read_csv(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\Energy.csv')
 #epic = pd.DataFrame(pd.read_excel(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\EPiC.xlsx'))
+#chep_co2 = pd.read_csv(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\CO2.csv')
 
 st.title("Cairns Hospital Parametric Analysis")
 
@@ -245,8 +247,6 @@ with st.sidebar:
 with st.container():
     
     st.subheader("**Design Inputs vs. Building Whole of Life Performance**")
-
-    chep_co2 = pd.read_csv(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\CO2.csv')
     
     CHEP_co2 = chep_co2.drop('img', axis =1)  
     
