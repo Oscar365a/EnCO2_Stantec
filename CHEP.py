@@ -23,7 +23,7 @@ with st.sidebar:
     WWR_NS = st.select_slider('Window-to-Wall Ratio (North-South):', options = [25, 50, 75], value = 50, key = 'WWR_NS')
     WWR_EW = st.select_slider('Window-to-Wall Ratio (East-West):', options = [25, 50, 75], value = 50, key = 'WWR_EW')
     Shade_dep = st.select_slider('Shade Depth (mm):', options = [0, 300, 600], value = 300, key = 'shadedepth')
-    Shade_ori = st.select_slider('Shade Orientation (0:V, 1:H):', options = [0, 1], value = 0, key = 'shadeori')
+    Shade_ori = st.select_slider('Shade Orientation (0=Vert, 1=Horiz):', options = [0, 1], value = 0, key = 'shadeori')
     SHGC_VLT = st.select_slider('SHGV/VLT:', options = ['0.22/30','0.45/50','0.7/65'], value = '0.45/50', key = 'glass_shgc')
     exwall = st.select_slider('External Wall R-value:', options = [1.0,1.4], value = 1.4, key = 'exwall_r')
     
