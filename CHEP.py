@@ -326,7 +326,7 @@ with st.container():
     with cols[0]:
         ""
     with cols[1]:
-        st.metric('Embodied CO2 (kgCO2e)', get_metrics_CO2()[0])
+        st.metric('Embodied CO2 (kgCO2e)', round(get_metrics_CO2()[0],2))
     with cols[2]:
         st.metric(f'Whole of Life (kgCO2e/{num_years}yrs)', round(get_metrics_CO2()[1],2))
     with cols[3]:
