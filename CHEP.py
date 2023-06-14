@@ -57,19 +57,19 @@ with st.container():
     with cols[0]:
         ""
     with cols[1]:
-        st.metric('EUI(kWh/m2)', get_metrics_EUI()[0])
+        st.metric('EUI(kWh/m2)', int(get_metrics_EUI()[0]))
     with cols[2]:
-        st.metric('HVACp (W/m2)', get_metrics_EUI()[1])
+        st.metric('HVACp (W/m2)', int(get_metrics_EUI()[1]))
     with cols[3]:
-        st.metric('Daylight Autonomy% (500lx)', get_metrics_EUI()[2])
+        st.metric('Daylight Autonomy% (500lx)', int(get_metrics_EUI()[2]))
     with cols[4]:
-        st.metric('Excessive Daylight% (>10000lx)', get_metrics_EUI()[3])
+        st.metric('Excessive Daylight% (>10000lx)', round(get_metrics_EUI()[3],2))
     with cols[5]:
-        st.metric('Cost ($ kWh/yr)', get_metrics_EUI()[4])
+        st.metric('Cost ($ kWh/yr)', int(get_metrics_EUI()[4]))
     with cols[6]:
-        st.metric('Patient North% (> OT 27C)', get_metrics_EUI()[5])
+        st.metric('Patient North% (> OT 27C)', int(get_metrics_EUI()[5]))
     with cols[7]:
-        st.metric('Patient South% (> OT 27C)', get_metrics_EUI()[6])
+        st.metric('Patient South% (> OT 27C)', int(get_metrics_EUI()[6]))
     with cols[8]:
         ""
         
