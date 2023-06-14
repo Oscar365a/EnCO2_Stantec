@@ -111,7 +111,12 @@ with st.container():
     
     st.subheader("**Design Inputs vs. Operational Building Performance**")
 
-    chep_pcm = px.parallel_coordinates(CHEP_en, CHEP_en.columns, color="EUI(kWh/m2)",
+    columns = ['WWR-NS', 'WWR-EW', 'ShadeDepth', 'ShadeOrientation (0:V, 1:H)',
+       'SHGC/VLT', 'ExWall', 'EUI(kWh/m2)', 'HVACp (W/m2)',
+       'Daylight Autonomy', 'Excessive Daylight', 'Energy Cost ($ kWh/yr)',
+       'OT27% - Patient North', 'OT27% - Patient South']
+    
+    chep_pcm = px.parallel_coordinates(CHEP_en, columns, color="EUI(kWh/m2)",
                                        labels={"ShadeDepth": "ShadeDepth", "ExWall":"ExWall"},
                                        color_continuous_scale=px.colors.cyclical.Edge,
                                        color_continuous_midpoint=2, height = 650)
