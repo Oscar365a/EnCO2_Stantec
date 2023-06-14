@@ -102,13 +102,11 @@ with st.container():
     with col1:
         ""
     with col2:
-        st.subheader(':red[**Selected Design Option**]')
         st.image(loadImages()[0], caption='Selected Design Iteration', use_column_width = False)
     with col3:
         ""
     with col4:
-        st.subheader(':red[**DtS Reference Case**]')
-        st.image(loadImages()[1], caption='Selected Design Iteration', use_column_width = False)
+        st.image(loadImages()[1], caption='DtS Reference Case', use_column_width = False)
     
     
     st.subheader("**Design Inputs vs. Operational Building Performance**")
