@@ -4,7 +4,7 @@ import plotly.express as px
 from PIL import Image
 
 
-st.set_page_config(page_title='CAIRNS Hospital Data Analysis', layout='wide')
+st.set_page_config(page_title='Project Parametric Analysis', layout='wide')
 
 CHEP_en = pd.read_csv('./data/Energy.csv')
 epic = pd.DataFrame(pd.read_excel('./data/EPiC.xlsx'))
@@ -14,7 +14,7 @@ chep_co2 = pd.read_csv('./data/CO2.csv')
 #epic = pd.DataFrame(pd.read_excel(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\EPiC.xlsx'))
 #chep_co2 = pd.read_csv(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\CO2.csv')
 
-st.title("Cairns Hospital Parametric Analysis")
+st.title("Project Parametric Analysis - 324 Iterations")
 
 with st.sidebar:
     
@@ -30,7 +30,7 @@ with st.sidebar:
     
 with st.container():
      
-    st.header('Design Selection Summary')
+    st.subheader('Design Selection Summary')
     
     def get_metrics_EUI():
        
@@ -38,17 +38,20 @@ with st.container():
                          CHEP_en['ShadeOrientation (0:V, 1:H)'].isin([Shade_ori]) & CHEP_en['SHGC/VLT'].isin([SHGC_VLT]) & CHEP_en['ExWall'].isin([exwall])]
         
         EUI_METRIC = CHEP_en_RESULT['EUI(kWh/m2)']
-        NORM_HVAC = CHEP_en_RESULT['Normalized HVACp (W/m2)']
-        AVE_DA =  CHEP_en_RESULT['Average DA']
-        AVE_UDI = CHEP_en_RESULT['Average UDI']
+        NORM_HVAC = CHEP_en_RESULT['HVACp (W/m2)']
+        AVE_DA =  CHEP_en_RESULT['Daylight Autonomy']
+        AVE_UDI = CHEP_en_RESULT['Excessive Daylight']
         ENERGY = CHEP_en_RESULT['Energy Cost ($ kWh/yr)']
         PATIENT_NORTH_OT = CHEP_en_RESULT['OT27% - Patient North']
         PATIENT_SOUTH_OT = CHEP_en_RESULT['OT27% - Patient South']
         image = CHEP_en_RESULT['img']
+        EUI_DtS = CHEP_en_RESULT['EUI(kWh/m2)|DtS']
+        NORM_HVAC_DtS = CHEP_en_RESULT['HVACp(W/m2)|DtS']
+        AVE_DA_DtS = CHEP_en_RESULT['DA|DtS']
+        AVE_UDI_DtS = CHEP_en_RESULT['Excessive Daylight|DtS']
         
-        return EUI_METRIC, NORM_HVAC, AVE_DA, AVE_UDI, ENERGY, PATIENT_NORTH_OT, PATIENT_SOUTH_OT, image
+        return EUI_METRIC, NORM_HVAC, AVE_DA, AVE_UDI, ENERGY, PATIENT_NORTH_OT, PATIENT_SOUTH_OT, image,EUI_DtS,NORM_HVAC_DtS,AVE_DA_DtS,AVE_UDI_DtS
             
-    
         
     cols = st.columns(9)
     with cols[0]:
@@ -58,9 +61,9 @@ with st.container():
     with cols[2]:
         st.metric('HVACp (W/m2)', get_metrics_EUI()[1])
     with cols[3]:
-        st.metric('Average DA% (500lx)', get_metrics_EUI()[2])
+        st.metric('Daylight Autonomy% (500lx)', get_metrics_EUI()[2])
     with cols[4]:
-        st.metric('Average UDI% (>10000lx)', get_metrics_EUI()[3])
+        st.metric('Excessive Daylight% (>10000lx)', get_metrics_EUI()[3])
     with cols[5]:
         st.metric('Cost ($ kWh/yr)', get_metrics_EUI()[4])
     with cols[6]:
@@ -70,19 +73,42 @@ with st.container():
     with cols[8]:
         ""
         
+    st.subheader('% Design Performance against DtS Case - (-) Saved (+) Wasted')
+    cols = st.columns(6)
+    
+    with cols[0]:
+        ""
+    with cols[1]:
+        st.metric('EUI(kWh/m2)', get_metrics_EUI()[8])
+    with cols[2]:
+        st.metric('HVACp (W/m2)', get_metrics_EUI()[9])
+    with cols[3]:
+        st.metric('Daylight Autonomy% (500lx)', get_metrics_EUI()[10])
+    with cols[4]:
+        st.metric('Excessive Daylight% (>10000lx)', get_metrics_EUI()[11])
+    with cols[5]:
+        ""
+    
     def loadImages():
       
         #img = Image.open(rf'C:\Users\atabadkani\Streamlit Apps\CHEP\data\images\{get_metrics_EUI()[7].iloc[0]}')
         img = Image.open(f'./data/images/{get_metrics_EUI()[7].iloc[0]}')
-        return img
+        #dts = Image.open(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\images\WWR-NS1_WWR-EW1_ShadeDepth0_ShadeOrienation0_SHGCVLT1_ExWall0.png')
+        dts = Image.open('./data/images/WWR-NS1_WWR-EW1_ShadeDepth0_ShadeOrienation0_SHGCVLT1_ExWall0.png')
+        return img, dts
     
-    col1,col2,col3 = st.columns([1.5,4,0.5])
+    col1,col2,col3,col4 = st.columns([1.5,4,0.5,4])
     
     with col1:
         ""
     with col2:
-        st.image(loadImages(), caption='Selected Design Iteration', use_column_width = False)
-    
+        st.subheader(':red[**Selected Design Option**]')
+        st.image(loadImages()[0], caption='Selected Design Iteration', use_column_width = False)
+    with col3:
+        ""
+    with col4:
+        st.subheader(':red[**DtS Reference Case**]')
+        st.image(loadImages()[1], caption='Selected Design Iteration', use_column_width = False)
     
     
     st.subheader("**Design Inputs vs. Operational Building Performance**")
@@ -96,7 +122,6 @@ with st.container():
          
     st.plotly_chart(chep_pcm, use_container_width=True)
     
-
     
     chep_bx_01 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["EUI(kWh/m2)"], "WWR-NS", notched = True)
     chep_bx_02 = px.box(CHEP_en, CHEP_en["WWR-EW"], CHEP_en["EUI(kWh/m2)"], "WWR-EW", notched = True)
@@ -120,12 +145,12 @@ with st.container():
     with cols[5]:
         st.plotly_chart(chep_bx_06, use_container_width=True)
 
-    chep_bx_07 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["Average DA"], "WWR-NS", notched = True)
-    chep_bx_08 = px.box(CHEP_en, CHEP_en["WWR-EW"], CHEP_en["Average DA"], "WWR-EW", notched = True)
-    chep_bx_09 = px.box(CHEP_en, CHEP_en["ShadeDepth"], CHEP_en['Average DA'], "ShadeDepth",  notched = True)
-    chep_bx_10 = px.box(CHEP_en, CHEP_en["SHGC/VLT"], CHEP_en['Average DA'], "SHGC/VLT",  notched = True)
-    chep_bx_11 = px.box(CHEP_en, CHEP_en["ExWall"], CHEP_en['Average DA'], "ExWall", notched = True)
-    chep_bx_12 = px.box(CHEP_en, CHEP_en["ShadeOrientation (0:V, 1:H)"], CHEP_en['Average DA'], "ShadeOrientation (0:V, 1:H)",notched = True)
+    chep_bx_07 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["Daylight Autonomy"], "WWR-NS", notched = True)
+    chep_bx_08 = px.box(CHEP_en, CHEP_en["WWR-EW"], CHEP_en["Daylight Autonomy"], "WWR-EW", notched = True)
+    chep_bx_09 = px.box(CHEP_en, CHEP_en["ShadeDepth"], CHEP_en['Daylight Autonomy'], "ShadeDepth",  notched = True)
+    chep_bx_10 = px.box(CHEP_en, CHEP_en["SHGC/VLT"], CHEP_en['Daylight Autonomy'], "SHGC/VLT",  notched = True)
+    chep_bx_11 = px.box(CHEP_en, CHEP_en["ExWall"], CHEP_en['Daylight Autonomy'], "ExWall", notched = True)
+    chep_bx_12 = px.box(CHEP_en, CHEP_en["ShadeOrientation (0:V, 1:H)"], CHEP_en['Daylight Autonomy'], "ShadeOrientation (0:V, 1:H)",notched = True)
     
     cols = st.columns(6)
     
@@ -143,12 +168,12 @@ with st.container():
         st.plotly_chart(chep_bx_12, use_container_width=True)
         
 
-    chep_bx_13 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["Average UDI"], "WWR-NS", notched = True)
-    chep_bx_14 = px.box(CHEP_en, CHEP_en["WWR-EW"], CHEP_en["Average UDI"], "WWR-EW", notched = True)
-    chep_bx_15 = px.box(CHEP_en, CHEP_en["ShadeDepth"], CHEP_en['Average UDI'], "ShadeDepth",  notched = True)
-    chep_bx_16 = px.box(CHEP_en, CHEP_en["SHGC/VLT"], CHEP_en['Average UDI'], "SHGC/VLT",  notched = True)
-    chep_bx_17 = px.box(CHEP_en, CHEP_en["ExWall"], CHEP_en['Average UDI'], "ExWall", notched = True)
-    chep_bx_18 = px.box(CHEP_en, CHEP_en["ShadeOrientation (0:V, 1:H)"], CHEP_en['Average UDI'], "ShadeOrientation (0:V, 1:H)",notched = True)
+    chep_bx_13 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["Excessive Daylight"], "WWR-NS", notched = True)
+    chep_bx_14 = px.box(CHEP_en, CHEP_en["WWR-EW"], CHEP_en["Excessive Daylight"], "WWR-EW", notched = True)
+    chep_bx_15 = px.box(CHEP_en, CHEP_en["ShadeDepth"], CHEP_en['Excessive Daylight'], "ShadeDepth",  notched = True)
+    chep_bx_16 = px.box(CHEP_en, CHEP_en["SHGC/VLT"], CHEP_en['Excessive Daylight'], "SHGC/VLT",  notched = True)
+    chep_bx_17 = px.box(CHEP_en, CHEP_en["ExWall"], CHEP_en['Excessive Daylight'], "ExWall", notched = True)
+    chep_bx_18 = px.box(CHEP_en, CHEP_en["ShadeOrientation (0:V, 1:H)"], CHEP_en['Excessive Daylight'], "ShadeOrientation (0:V, 1:H)",notched = True)
     
     cols = st.columns(6)
     
@@ -169,6 +194,9 @@ with st.container():
 def get_index(df) -> dict:
         dict_ = {df['Version: EPiC Database 2019'].iloc[i]: i for i in range(0, len(df['Version: EPiC Database 2019']))}
         return dict_
+
+
+#Material Selection and Emission Calc
 
 with st.sidebar:
     
@@ -223,6 +251,8 @@ with st.sidebar:
     st.markdown(f'**Unit: {alum_unit} | Emission Factor (kgCO₂e): {alum_em}**')
     
     
+#Scenario Type Selection
+
 with st.sidebar:
     Floor_area = 2310.5  ##########
     
@@ -247,6 +277,7 @@ with st.sidebar:
 with st.container():
     
     st.subheader("**Design Inputs vs. Building Whole of Life Performance**")
+
     
     CHEP_co2 = chep_co2.drop('img', axis =1)  
     
@@ -307,44 +338,90 @@ with st.container():
          
     st.plotly_chart(chep_pcm_co, use_container_width=True)
 
+#DtS CO2 Calcs
+
+DtS_Concrete = 1055.82 #####
+DtS_Glasswool = 486 #####
+DtS_PB = 164.11 #####
+DtS_Glass = 541.94  #####
+DtS_Shade = 0 #####
+DtS_EUI = 84.31 #####
+
+if concrete_unit == 'm³':
+    concrete_calc_dts = DtS_Concrete*concrete_em
+elif concrete_unit == 'kg':
+    concrete_ = concrete_em*concerte_density
+    concrete_calc_dts = DtS_Concrete*concrete_
+if  PB_unit == 'm²':
+    if PB_selection == 'Plasterboard - 10 mm':
+        PB_1m = 1/0.01
+        PB_ = PB_1m*PB_em
+        PB_calc_dts = DtS_PB*PB_
+    elif PB_selection == 'Plasterboard - 13 mm':
+        PB_1m = 1/0.013
+        PB_ = PB_1m*PB_em
+        PB_calc_dts = DtS_PB*PB_
+elif PB_unit == 'kg':
+        PB_ = PB_em*PB_density
+        PB_calc_dts = DtS_PB*PB_
+if Glass_unit == 'm²':
+    Glass_calc_dts = DtS_Glass*Glass_em
+if alum_unit == 'm²':
+    alum_calc_dts = DtS_Shade*alum_em
+
+embodied_dts = concrete_calc_dts+PB_calc_dts+Glass_calc_dts+alum_calc_dts
+DtS_WoL = (DtS_EUI*Floor_area*grid_factor*num_years)+round(embodied_dts,2)
+
+
 
 with st.container():
-     
+    
     
     def get_metrics_CO2():
-
+       
         CHEP_co2_RESULT = CHEP_co2[CHEP_co2['WWR-NS'].isin([WWR_NS]) & CHEP_co2['WWR-EW'].isin([WWR_EW]) & CHEP_co2['ShadeDepth'].isin([Shade_dep]) & 
-                             CHEP_co2['ShadeOrientation (0:V, 1:H)'].isin([Shade_ori]) & CHEP_co2['SHGC/VLT'].isin([SHGC_VLT]) & CHEP_co2['ExWall'].isin([exwall])]
-
+                         CHEP_co2['ShadeOrientation (0:V, 1:H)'].isin([Shade_ori]) & CHEP_co2['SHGC/VLT'].isin([SHGC_VLT]) & CHEP_co2['ExWall'].isin([exwall])]
+        
         TotalCO2 = CHEP_co2_RESULT['Total kgCO2e']
         WoL_ = CHEP_co2_RESULT['WoL']
         EUI4co2 = CHEP_co2_RESULT['EUI (kWh/m2)']
-
+        
+        
         return TotalCO2, WoL_, EUI4co2, CHEP_co2_RESULT
             
-    cols = st.columns(4)
+    cols = st.columns(5)
     with cols[0]:
         ""
     with cols[1]:
-        st.metric('Embodied CO2 (kgCO2e)', round(get_metrics_CO2()[0],2))
+        st.metric('Embodied CO2 (kgCO2e)', int(round(get_metrics_CO2()[0],0)))
     with cols[2]:
-        st.metric(f'Whole of Life (kgCO2e/{num_years}yrs)', round(get_metrics_CO2()[1],2))
+        st.metric(f'Whole of Life (kgCO2e/{num_years}yrs)', int(round(get_metrics_CO2()[1],0)))
     with cols[3]:
+        st.metric(f'DtS Whole of Life (kgCO2e/{num_years}yrs)', int(round(DtS_WoL,0)))
+    with cols[4]:
         ""
 
 with st.container():
     
-    cols = st.columns(3)
+    cols = st.columns(4)
     with cols[0]:
         ""
     with cols[1]: 
         chep_pie_co2 = px.pie(color_discrete_sequence=px.colors.sequential.RdBu, 
-                              names =['Upfront Carbon', 'Operational Carbon'], values = [get_metrics_CO2()[0].iloc[0],get_metrics_CO2()[2].iloc[0]*Floor_area*grid_factor*num_years,])
+                              names =['Upfront Carbon', 'Operational Carbon'], values = [get_metrics_CO2()[0].iloc[0],get_metrics_CO2()[2].iloc[0]*Floor_area*grid_factor*num_years])
         chep_pie_co2.update_traces(textposition='inside', textinfo='percent+label')
         st.plotly_chart(chep_pie_co2,use_container_width=True)
     with cols[2]:
+       upfront_vs_dts = ((get_metrics_CO2()[0].iloc[0]/embodied_dts)-1)*100
+       operational_vs_dts = (((DtS_EUI*Floor_area*grid_factor*num_years)/(get_metrics_CO2()[2].iloc[0]*Floor_area*grid_factor*num_years))-1)*100
+       chep_pie_co2_dts = px.pie(color_discrete_sequence=px.colors.sequential.thermal, 
+                             names =['Upfront Carbon vs. DtS', 'Operational Carbon vs. DtS '], values = [upfront_vs_dts,operational_vs_dts])
+       chep_pie_co2_dts.update_traces(textposition='inside', textinfo='percent+label')
+       st.plotly_chart(chep_pie_co2_dts,use_container_width=True)
+    with cols[3]:
         ""
-    
+   
+
     chep_bx_19 = px.box(CHEP_co2, CHEP_co2["WWR-NS"], CHEP_co2['Total kgCO2e'], "WWR-NS", notched = True)
     chep_bx_20 = px.box(CHEP_co2, CHEP_co2["WWR-EW"], CHEP_co2['Total kgCO2e'], "WWR-EW", notched = True)
     chep_bx_21 = px.box(CHEP_co2, CHEP_co2["ShadeDepth"], CHEP_co2['Total kgCO2e'], "ShadeDepth",  notched = True)
