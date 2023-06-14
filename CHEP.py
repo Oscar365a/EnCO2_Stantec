@@ -389,7 +389,7 @@ with st.container():
         
         return TotalCO2, WoL_, EUI4co2, CHEP_co2_RESULT
             
-    cols = st.columns(5)
+    cols = st.columns(6)
     with cols[0]:
         ""
     with cols[1]:
@@ -397,8 +397,10 @@ with st.container():
     with cols[2]:
         st.metric(f'Whole of Life (kgCO2e/{num_years}yrs)', int(round(get_metrics_CO2()[1],0)))
     with cols[3]:
-        st.metric(f'DtS Whole of Life (kgCO2e/{num_years}yrs)', int(round(DtS_WoL,0)))
+        st.metric('DtS Embodied CO2 (kgCO2e)', int(round(embodied_dts,0)))
     with cols[4]:
+        st.metric(f'DtS Whole of Life (kgCO2e/{num_years}yrs)', int(round(DtS_WoL,0)))
+    with cols[5]:
         ""
 
 with st.container():
