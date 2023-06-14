@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from PIL import Image
+import plotly.graph_objects as go
 
 
 st.set_page_config(page_title='Project Parametric Analysis', layout='wide')
@@ -24,7 +25,7 @@ with st.sidebar:
     WWR_EW = st.select_slider('Window-to-Wall Ratio (East-West):', options = [25, 50, 75], value = 50, key = 'WWR_EW')
     Shade_dep = st.select_slider('Shade Depth (mm):', options = [0, 300, 600], value = 300, key = 'shadedepth')
     Shade_ori = st.select_slider('Shade Orientation (0=Vert, 1=Horiz):', options = [0, 1], value = 0, key = 'shadeori')
-    SHGC_VLT = st.select_slider('SHGV/VLT:', options = ['0.22/30','0.45/50','0.7/65'], value = '0.45/50', key = 'glass_shgc')
+    SHGC = st.select_slider('SHGC:', options = [0.22,0.45,0.70], value = 0.45, key = 'glass_shgc')
     exwall = st.select_slider('External Wall R-value:', options = [1.0,1.4], value = 1.4, key = 'exwall_r')
     
     
@@ -35,7 +36,7 @@ with st.container():
     def get_metrics_EUI():
        
         CHEP_en_RESULT = CHEP_en[CHEP_en['WWR-NS'].isin([WWR_NS]) & CHEP_en['WWR-EW'].isin([WWR_EW]) & CHEP_en['ShadeDepth'].isin([Shade_dep]) & 
-                         CHEP_en['ShadeOrientation (0:V, 1:H)'].isin([Shade_ori]) & CHEP_en['SHGC/VLT'].isin([SHGC_VLT]) & CHEP_en['ExWall'].isin([exwall])]
+                         CHEP_en['ShadeOrientation (0:V, 1:H)'].isin([Shade_ori]) & CHEP_en['SHGC'].isin([SHGC]) & CHEP_en['ExWall'].isin([exwall])]
         
         EUI_METRIC = CHEP_en_RESULT['EUI(kWh/m2)']
         NORM_HVAC = CHEP_en_RESULT['HVACp (W/m2)']
@@ -63,7 +64,7 @@ with st.container():
     with cols[3]:
         st.metric('Daylight Autonomy% (500lx)', int(get_metrics_EUI()[2]))
     with cols[4]:
-        st.metric('Excessive Daylight% (>10000lx)', round(get_metrics_EUI()[3],2))
+        st.metric('Excessive Daylight% (>10000lx)',round(get_metrics_EUI()[3],2))
     with cols[5]:
         st.metric('Cost ($ kWh/yr)', int(get_metrics_EUI()[4]))
     with cols[6]:
@@ -73,7 +74,7 @@ with st.container():
     with cols[8]:
         ""
         
-    st.subheader('% Design Performance against DtS Case - (-) Saved (+) Wasted')
+    st.subheader('Design Performance against Reference Case - % Saved (-) Wasted (+)')
     cols = st.columns(6)
     
     with cols[0]:
@@ -106,13 +107,13 @@ with st.container():
     with col3:
         ""
     with col4:
-        st.image(loadImages()[1], caption='DtS Reference Case', use_column_width = False)
+        st.image(loadImages()[1], caption='Reference Case', use_column_width = False)
     
     
     st.subheader("**Design Inputs vs. Operational Building Performance**")
-
+    
     columns = ['WWR-NS', 'WWR-EW', 'ShadeDepth', 'ShadeOrientation (0:V, 1:H)',
-       'SHGC/VLT', 'ExWall', 'EUI(kWh/m2)', 'HVACp (W/m2)',
+       'SHGC','VLT', 'ExWall', 'EUI(kWh/m2)', 'HVACp (W/m2)',
        'Daylight Autonomy', 'Excessive Daylight', 'Energy Cost ($ kWh/yr)',
        'OT27% - Patient North', 'OT27% - Patient South']
     
@@ -129,7 +130,7 @@ with st.container():
     chep_bx_01 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["EUI(kWh/m2)"], "WWR-NS", notched = True)
     chep_bx_02 = px.box(CHEP_en, CHEP_en["WWR-EW"], CHEP_en["EUI(kWh/m2)"], "WWR-EW", notched = True)
     chep_bx_03 = px.box(CHEP_en, CHEP_en["ShadeDepth"], CHEP_en["EUI(kWh/m2)"], "ShadeDepth", notched = True)
-    chep_bx_04 = px.box(CHEP_en, CHEP_en["SHGC/VLT"], CHEP_en["EUI(kWh/m2)"], "SHGC/VLT", notched = True)
+    chep_bx_04 = px.box(CHEP_en, CHEP_en["SHGC"], CHEP_en["EUI(kWh/m2)"], "SHGC", notched = True)
     chep_bx_05 = px.box(CHEP_en, CHEP_en["ExWall"], CHEP_en["EUI(kWh/m2)"], "ExWall", notched = True)
     chep_bx_06 = px.box(CHEP_en, CHEP_en["ShadeOrientation (0:V, 1:H)"], CHEP_en["EUI(kWh/m2)"], "ShadeOrientation (0:V, 1:H)", notched = True)
     
@@ -151,7 +152,7 @@ with st.container():
     chep_bx_07 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["Daylight Autonomy"], "WWR-NS", notched = True)
     chep_bx_08 = px.box(CHEP_en, CHEP_en["WWR-EW"], CHEP_en["Daylight Autonomy"], "WWR-EW", notched = True)
     chep_bx_09 = px.box(CHEP_en, CHEP_en["ShadeDepth"], CHEP_en['Daylight Autonomy'], "ShadeDepth",  notched = True)
-    chep_bx_10 = px.box(CHEP_en, CHEP_en["SHGC/VLT"], CHEP_en['Daylight Autonomy'], "SHGC/VLT",  notched = True)
+    chep_bx_10 = px.box(CHEP_en, CHEP_en["VLT"], CHEP_en['Daylight Autonomy'], "VLT",  notched = True)
     chep_bx_11 = px.box(CHEP_en, CHEP_en["ExWall"], CHEP_en['Daylight Autonomy'], "ExWall", notched = True)
     chep_bx_12 = px.box(CHEP_en, CHEP_en["ShadeOrientation (0:V, 1:H)"], CHEP_en['Daylight Autonomy'], "ShadeOrientation (0:V, 1:H)",notched = True)
     
@@ -174,7 +175,7 @@ with st.container():
     chep_bx_13 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["Excessive Daylight"], "WWR-NS", notched = True)
     chep_bx_14 = px.box(CHEP_en, CHEP_en["WWR-EW"], CHEP_en["Excessive Daylight"], "WWR-EW", notched = True)
     chep_bx_15 = px.box(CHEP_en, CHEP_en["ShadeDepth"], CHEP_en['Excessive Daylight'], "ShadeDepth",  notched = True)
-    chep_bx_16 = px.box(CHEP_en, CHEP_en["SHGC/VLT"], CHEP_en['Excessive Daylight'], "SHGC/VLT",  notched = True)
+    chep_bx_16 = px.box(CHEP_en, CHEP_en["VLT"], CHEP_en['Excessive Daylight'], "VLT",  notched = True)
     chep_bx_17 = px.box(CHEP_en, CHEP_en["ExWall"], CHEP_en['Excessive Daylight'], "ExWall", notched = True)
     chep_bx_18 = px.box(CHEP_en, CHEP_en["ShadeOrientation (0:V, 1:H)"], CHEP_en['Excessive Daylight'], "ShadeOrientation (0:V, 1:H)",notched = True)
     
@@ -198,6 +199,8 @@ def get_index(df) -> dict:
         dict_ = {df['Version: EPiC Database 2019'].iloc[i]: i for i in range(0, len(df['Version: EPiC Database 2019']))}
         return dict_
 
+####################################################################################################################
+#CARBON SECTION
 
 #Material Selection and Emission Calc
 
@@ -235,14 +238,15 @@ with st.sidebar:
     Glass_em = Glass['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(Glass)[Glass_selection])]
     st.markdown(f'**Unit: {Glass_unit} | Emission Factor (kgCO₂e): {Glass_em}**')
     
-    # insul = epic[epic['Version: EPiC Database 2019'].str.contains('insulation')]
-    # insul = insul[insul['Functional unit'] !='no.']
-    # insul_type = insul['Version: EPiC Database 2019'].iloc[:]
+    insul = epic[epic['Version: EPiC Database 2019'].str.contains('insulation')]
+    insul = insul[insul['Functional unit'] !='no.']
+    insul_type = ['Cellulose insulation','Glasswool insulation','Rockwool insulation']
     
-    # insul_selection = st.selectbox('Insulation Type:', options=insul_type, key='insul', index = 1)
-    # insul_unit = insul['Functional unit'].iloc[int(get_index(insul)[insul_selection])]
-    # insul_em = insul['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(insul)[insul_selection])]
-    # st.markdown(f'Unit: {insul_unit} | Emission Factor (kgCO₂e): {insul_em}')
+    insul_selection = st.selectbox('Insulation Type:', options=insul_type, key='insul', index = 1)
+    insul_unit = insul['Functional unit'].iloc[int(get_index(insul)[insul_selection])]
+    insul_em = insul['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(insul)[insul_selection])]
+    st.markdown(f'Unit: {insul_unit} | Emission Factor (kgCO₂e): {insul_em}')
+    insul_density = st.number_input('Insulation Density', min_value=10, max_value=1000, value = 300)
     
     alum = epic[epic['Version: EPiC Database 2019'].str.contains('Aluminium')]
     alum = alum[alum['Functional unit'] !='no.']
@@ -277,18 +281,19 @@ with st.sidebar:
     
     st.markdown(f'**Grid Emission Factor is {round(grid_factor,2)}.**')
     
+#CO2 PCM
+
 with st.container():
     
     st.subheader("**Design Inputs vs. Building Whole of Life Performance**")
 
-    
     CHEP_co2 = chep_co2.drop('img', axis =1)  
     
     concrete_calc = []
     PB_calc = []
     Glass_calc = []
+    insul_calc = []
     alum_calc  = []
-    
     
     for i in range(0, len(CHEP_co2)):
         if concrete_unit == 'm³':
@@ -316,27 +321,29 @@ with st.container():
         if Glass_unit == 'm²':
             Glass_vol = CHEP_co2['Glass Area m2'].iloc[i]*Glass_em
             Glass_calc.append(Glass_vol)
+        if insul_unit == 'kg':
+            insul_ = insul_em*insul_density
+            insul_vol = CHEP_co2['Concrete m3'].iloc[i]*insul_
+            insul_calc.append(insul_vol)
         if alum_unit == 'm²':
             alum_vol = CHEP_co2['Shades Area m2'].iloc[i]*alum_em
             alum_calc.append(alum_vol)
     
-    calc_df_raw = pd.DataFrame([concrete_calc , PB_calc,Glass_calc,alum_calc])
+    calc_df_raw = pd.DataFrame([concrete_calc,PB_calc,Glass_calc,alum_calc,insul_calc])
     calc_df = calc_df_raw.transpose()
-    calc_df = calc_df.rename(columns={0:'concrete_calc', 1:'PB_calc',2:'Glass_calc',3:'alum_calc'})
-    calc_df['Total'] = calc_df['concrete_calc']+calc_df['PB_calc']+calc_df['Glass_calc']+calc_df['alum_calc']
+    calc_df = calc_df.rename(columns={0:'concrete_calc', 1:'PB_calc',2:'Glass_calc',3:'alum_calc',4:'insul_calc'})
+    calc_df['Total'] = calc_df['concrete_calc']+calc_df['PB_calc']+calc_df['Glass_calc']+calc_df['alum_calc']+calc_df['insul_calc']
     
     CHEP_co2['WoL'] = ((CHEP_co2['EUI (kWh/m2)'].iloc[i]*Floor_area*grid_factor*num_years)+round(calc_df['Total'],2))
     
     CHEP_co2['Total kgCO2e'] = calc_df['Total']
     
     chep_pcm_co = px.parallel_coordinates(CHEP_co2, ['WWR-NS', 'WWR-EW', 'ShadeDepth', 'ShadeOrientation (0:V, 1:H)',
-       'SHGC/VLT', 'ExWall', 'Total kgCO2e', 'WoL','EUI (kWh/m2)'], color='EUI (kWh/m2)',
+       'SHGC','VLT', 'ExWall', 'Total kgCO2e', 'WoL','EUI (kWh/m2)'], color='EUI (kWh/m2)',
                                         labels={"ShadeDepth": "ShadeDepth", "ExWall":"ExWall"},
                                         color_continuous_scale=px.colors.cyclical.HSV,
                                         color_continuous_midpoint=100, height = 650)
 
-    
-    
     chep_pcm_co.update_layout(coloraxis_showscale=False)
          
     st.plotly_chart(chep_pcm_co, use_container_width=True)
@@ -369,68 +376,85 @@ elif PB_unit == 'kg':
         PB_calc_dts = DtS_PB*PB_
 if Glass_unit == 'm²':
     Glass_calc_dts = DtS_Glass*Glass_em
+if insul_unit == 'kg':
+    insul_calc_dts = DtS_Glasswool*insul_em
 if alum_unit == 'm²':
     alum_calc_dts = DtS_Shade*alum_em
 
-embodied_dts = concrete_calc_dts+PB_calc_dts+Glass_calc_dts+alum_calc_dts
-DtS_WoL = (DtS_EUI*Floor_area*grid_factor*num_years)+round(embodied_dts,2)
+DTS_Upfront = concrete_calc_dts+PB_calc_dts+Glass_calc_dts+alum_calc_dts
+DtS_WoL = (DtS_EUI*Floor_area*grid_factor*num_years)+round(DTS_Upfront,2)
 
-
+#CO2 Metrics
 
 with st.container():
-    
     
     def get_metrics_CO2():
        
         CHEP_co2_RESULT = CHEP_co2[CHEP_co2['WWR-NS'].isin([WWR_NS]) & CHEP_co2['WWR-EW'].isin([WWR_EW]) & CHEP_co2['ShadeDepth'].isin([Shade_dep]) & 
-                         CHEP_co2['ShadeOrientation (0:V, 1:H)'].isin([Shade_ori]) & CHEP_co2['SHGC/VLT'].isin([SHGC_VLT]) & CHEP_co2['ExWall'].isin([exwall])]
+                         CHEP_co2['ShadeOrientation (0:V, 1:H)'].isin([Shade_ori]) & CHEP_co2['SHGC'].isin([SHGC]) & CHEP_co2['ExWall'].isin([exwall])]
         
         TotalCO2 = CHEP_co2_RESULT['Total kgCO2e']
         WoL_ = CHEP_co2_RESULT['WoL']
         EUI4co2 = CHEP_co2_RESULT['EUI (kWh/m2)']
         
-        
-        return TotalCO2, WoL_, EUI4co2, CHEP_co2_RESULT
+        return TotalCO2, WoL_, EUI4co2
             
     cols = st.columns(6)
     with cols[0]:
         ""
     with cols[1]:
-        st.metric('Embodied CO2 (kgCO2e)', int(round(get_metrics_CO2()[0],0)))
+        st.metric('Proposed Case Embodied CO2 (kgCO2e)', int(round(get_metrics_CO2()[0],0)))
     with cols[2]:
-        st.metric(f'Whole of Life (kgCO2e/{num_years}yrs)', int(round(get_metrics_CO2()[1],0)))
+        st.metric(f'Proposed Case Whole of Life (kgCO2e/{num_years}yrs)', int(round(get_metrics_CO2()[1],0)))
     with cols[3]:
-        st.metric('DtS Embodied CO2 (kgCO2e)', int(round(embodied_dts,0)))
+        st.metric('Reference Case Embodied CO2 (kgCO2e)', int(round(DTS_Upfront,0)))
     with cols[4]:
-        st.metric(f'DtS Whole of Life (kgCO2e/{num_years}yrs)', int(round(DtS_WoL,0)))
+        st.metric(f'Reference Case Whole of Life (kgCO2e/{num_years}yrs)', int(round(DtS_WoL,0)))
     with cols[5]:
         ""
+#Pie Charts
 
 with st.container():
     
-    cols = st.columns(4)
+    cols = st.columns([0.5,2.3,0.5,2.3,0.5])
     with cols[0]:
         ""
+        
     with cols[1]: 
+        Proposed_Upfront_CO2 = get_metrics_CO2()[0].iloc[0]
+        Proposed_Opr_CO2 = get_metrics_CO2()[2].iloc[0]*Floor_area*grid_factor*num_years
         chep_pie_co2 = px.pie(color_discrete_sequence=px.colors.sequential.RdBu, 
-                              names =['Upfront Carbon', 'Operational Carbon'], values = [get_metrics_CO2()[0].iloc[0],get_metrics_CO2()[2].iloc[0]*Floor_area*grid_factor*num_years])
+                              names =['Upfront Carbon', 'Operational Carbon'], values = [Proposed_Upfront_CO2,Proposed_Opr_CO2])
         chep_pie_co2.update_traces(textposition='inside', textinfo='percent+label')
+        chep_pie_co2.update_layout(title_text='Proposed Case')
         st.plotly_chart(chep_pie_co2,use_container_width=True)
+    
     with cols[2]:
-       upfront_vs_dts = ((get_metrics_CO2()[0].iloc[0]/embodied_dts)-1)*100
-       operational_vs_dts = (((DtS_EUI*Floor_area*grid_factor*num_years)/(get_metrics_CO2()[2].iloc[0]*Floor_area*grid_factor*num_years))-1)*100
-       chep_pie_co2_dts = px.pie(color_discrete_sequence=px.colors.sequential.thermal, 
-                             names =['Upfront Carbon vs. DtS', 'Operational Carbon vs. DtS '], values = [upfront_vs_dts,operational_vs_dts])
-       chep_pie_co2_dts.update_traces(textposition='inside', textinfo='percent+label')
-       st.plotly_chart(chep_pie_co2_dts,use_container_width=True)
-    with cols[3]:
         ""
-   
+        
+    with cols[3]:
+        
+        DTS_Operational_CO2 = DtS_EUI*Floor_area*grid_factor*num_years
+        
+        chep_bar_CO2_DtS = go.Figure(data=[
+                        go.Bar(x = ['Proposed Upfront','Reference Upfront', 'Proposed Operational','Reference Operational'],
+                               y = [Proposed_Upfront_CO2,DTS_Upfront,Proposed_Opr_CO2,DTS_Operational_CO2],
+            marker_color= ['lightblue','Red','lightblue','Red'], width=[0.5, 0.5, 0.5, 0.5, 0.5])])
+
+        chep_bar_CO2_DtS.update_traces(marker_line_width=1.5, opacity=0.75)
+        chep_bar_CO2_DtS.update_layout(title_text='Proposed vs. Reference')
+        
+        st.plotly_chart(chep_bar_CO2_DtS,use_container_width=True)
+        
+    with cols[4]:
+        ""
+        
+#Box Plots
 
     chep_bx_19 = px.box(CHEP_co2, CHEP_co2["WWR-NS"], CHEP_co2['Total kgCO2e'], "WWR-NS", notched = True)
     chep_bx_20 = px.box(CHEP_co2, CHEP_co2["WWR-EW"], CHEP_co2['Total kgCO2e'], "WWR-EW", notched = True)
     chep_bx_21 = px.box(CHEP_co2, CHEP_co2["ShadeDepth"], CHEP_co2['Total kgCO2e'], "ShadeDepth",  notched = True)
-    chep_bx_22 = px.box(CHEP_co2, CHEP_co2["SHGC/VLT"], CHEP_co2['Total kgCO2e'], "SHGC/VLT",notched = True)
+    chep_bx_22 = px.box(CHEP_co2, CHEP_co2["SHGC"], CHEP_co2['Total kgCO2e'], "SHGC",notched = True)
     chep_bx_23 = px.box(CHEP_co2, CHEP_co2["ExWall"], CHEP_co2['Total kgCO2e'], "ExWall", notched = True)
     chep_bx_24 = px.box(CHEP_co2, CHEP_co2["ShadeOrientation (0:V, 1:H)"], CHEP_co2['Total kgCO2e'], "ShadeOrientation (0:V, 1:H)", notched = True)
         
@@ -453,7 +477,7 @@ with st.container():
     chep_bx_25 = px.box(CHEP_co2, CHEP_co2["WWR-NS"], CHEP_co2['WoL'], "WWR-NS", notched = True)
     chep_bx_26 = px.box(CHEP_co2, CHEP_co2["WWR-EW"], CHEP_co2['WoL'], "WWR-EW", notched = True)
     chep_bx_27 = px.box(CHEP_co2, CHEP_co2["ShadeDepth"], CHEP_co2['WoL'], "ShadeDepth",  notched = True)
-    chep_bx_28 = px.box(CHEP_co2, CHEP_co2["SHGC/VLT"], CHEP_co2['WoL'], "SHGC/VLT",notched = True)
+    chep_bx_28 = px.box(CHEP_co2, CHEP_co2["SHGC"], CHEP_co2['WoL'], "SHGC",notched = True)
     chep_bx_29 = px.box(CHEP_co2, CHEP_co2["ExWall"], CHEP_co2['WoL'], "ExWall", notched = True)
     chep_bx_30 = px.box(CHEP_co2, CHEP_co2["ShadeOrientation (0:V, 1:H)"], CHEP_co2['WoL'], "ShadeOrientation (0:V, 1:H)", notched = True)
         
