@@ -46,7 +46,7 @@ with st.container():
         NORM_HVAC = CHEP_en_RESULT['HVACp (W/m2)']
         AVE_DA =  CHEP_en_RESULT['Daylight Autonomy']
         AVE_UDI = CHEP_en_RESULT['Excessive Daylight']
-        ENERGY = CHEP_en_RESULT['Energy Cost ($ kWh/yr)']
+        ENERGY = CHEP_en_RESULT['Energy Cost (AU$/yr)']
         PATIENT_NORTH_OT = CHEP_en_RESULT['OT27% - Patient North']
         PATIENT_SOUTH_OT = CHEP_en_RESULT['OT27% - Patient South']
         image = CHEP_en_RESULT['img']
@@ -58,7 +58,7 @@ with st.container():
         return EUI_METRIC, NORM_HVAC, AVE_DA, AVE_UDI, ENERGY, PATIENT_NORTH_OT, PATIENT_SOUTH_OT, image,EUI_DtS,NORM_HVAC_DtS,AVE_DA_DtS,AVE_UDI_DtS
             
         
-    cols = st.columns(9)
+    cols = st.columns([0.1,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.1])
     with cols[0]:
         ""
     with cols[1]:
@@ -70,7 +70,7 @@ with st.container():
     with cols[4]:
         st.metric('Excessive Daylight% (>10000lx)',round(get_metrics_EUI()[3],2))
     with cols[5]:
-        st.metric('Cost ($ kWh/yr)', int(get_metrics_EUI()[4]))
+        st.metric('Cost (AU$/yr)', int(get_metrics_EUI()[4]))
     with cols[6]:
         st.metric('Patient North% (> OT 27C)', int(get_metrics_EUI()[5]))
     with cols[7]:
@@ -118,7 +118,7 @@ with st.container():
     
     columns = ['WWR-NS', 'WWR-EW', 'ShadeDepth', 'ShadeOrientation (0:V, 1:H)',
        'SHGC','VLT', 'ExWall', 'EUI(kWh/m2)', 'HVACp (W/m2)',
-       'Daylight Autonomy', 'Excessive Daylight', 'Energy Cost ($ kWh/yr)',
+       'Daylight Autonomy', 'Excessive Daylight', 'Energy Cost (AU$/yr)',
        'OT27% - Patient North', 'OT27% - Patient South']
     
     chep_pcm = px.parallel_coordinates(CHEP_en, columns, color="EUI(kWh/m2)",
@@ -287,6 +287,8 @@ with st.sidebar:
     st.markdown(f'**Grid Emission Factor is {round(grid_factor,2)}.**')
     
 #CO2 PCM
+
+
 
 with st.container():
     
