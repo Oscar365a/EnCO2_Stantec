@@ -287,10 +287,6 @@ with st.sidebar:
     st.markdown(f'**Grid Emission Factor is {round(grid_factor,2)}.**')
     
 #CO2 PCM
-st.markdown('---')
-st.header("**CARBON SECTION**")
-st.markdown('---')
-
 
 with st.container():
     
