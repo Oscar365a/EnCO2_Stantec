@@ -18,7 +18,7 @@ chep_co2 = pd.read_csv('./data/CO2.csv')
 st.title("Project Parametric Analysis - 324 Iterations")
 
 st.markdown('---')
-st.header("**ENERGY SECTION**")
+st.header(":red[**ENERGY SECTION**]")
 st.markdown('---')
 
 with st.sidebar:
@@ -203,6 +203,9 @@ def get_index(df) -> dict:
 
 ####################################################################################################################
 #CARBON SECTION
+st.markdown('---')
+st.header(":red[**CARBON SECTION**]")
+st.markdown('---')
 
 #Material Selection and Emission Calc
 
