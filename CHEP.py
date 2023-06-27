@@ -421,26 +421,42 @@ with st.container():
     inwall_contribution = []
     WoL = []
     
-    
+    #Material Selection Embodied Calculations
     for i in range(0, len(CHEP_co2)):
-        
+        #Concrete
         concrete_vol = (CHEP_co2['Conc_Roof(m3)'].iloc[i]*roof_concrete_em)+(CHEP_co2['Conc_ExWall(m3)'].iloc[i]*wall_concrete_em)+(CHEP_co2['Conc_Floor(m3)'].iloc[i]*floor_concrete_em)
         concrete_calc.append(concrete_vol)
-        
-        if (roof_PB_selection == 'Plasterboard - 10 mm') or (wall_PB_selection == 'Plasterboard - 10 mm') or (inwall_PB_selection == 'Plasterboard - 10 mm'):
+        #Plasterboard
+        if (roof_PB_selection == 'Plasterboard - 10 mm'):
             PB_1m = 1/0.01
-            PB_vol = (CHEP_co2['PB_Roof(m3)'].iloc[i]*PB_1m*roof_PB_em)+(CHEP_co2['PB_ExWall(m3)'].iloc[i]*PB_1m*wall_PB_em)+(CHEP_co2['PB_IntWall(m3)'].iloc[i]*PB_1m*inwall_PB_em)
-            PB_calc.append(PB_vol)
+            PB_vol_roof = (CHEP_co2['PB_Roof(m3)'].iloc[i]*PB_1m*roof_PB_em)
+            
         elif (roof_PB_selection == 'Plasterboard - 13 mm') or (wall_PB_selection == 'Plasterboard - 13 mm') or (inwall_PB_selection == 'Plasterboard - 13 mm'):
             PB_1m = 1/0.013
-            PB_vol = (CHEP_co2['PB_Roof(m3)'].iloc[i]*PB_1m*roof_PB_em)+(CHEP_co2['PB_ExWall(m3)'].iloc[i]*PB_1m*wall_PB_em)+(CHEP_co2['PB_IntWall(m3)'].iloc[i]*PB_1m*inwall_PB_em)
-            PB_calc.append(PB_vol)
+            PB_vol_roof = (CHEP_co2['PB_Roof(m3)'].iloc[i]*PB_1m*roof_PB_em)
         
+        if (wall_PB_selection == 'Plasterboard - 10 mm'):
+            PB_1m = 1/0.01
+            PB_vol_exwall = (CHEP_co2['PB_ExWall(m3)'].iloc[i]*PB_1m*wall_PB_em)
+        elif (wall_PB_selection == 'Plasterboard - 13 mm'):
+            PB_1m = 1/0.013
+            PB_vol_exwall = (CHEP_co2['PB_ExWall(m3)'].iloc[i]*PB_1m*wall_PB_em)
         
+        if (inwall_PB_selection == 'Plasterboard - 10 mm'):
+            PB_1m = 1/0.01
+            PB_vol_inwall = (CHEP_co2['PB_IntWall(m3)'].iloc[i]*PB_1m*wall_PB_em)
+        elif (inwall_PB_selection == 'Plasterboard - 13 mm'):
+            PB_1m = 1/0.013
+            PB_vol_inwall = (CHEP_co2['PB_IntWall(m3)'].iloc[i]*PB_1m*wall_PB_em)
+        
+        PB_vol = PB_vol_roof+PB_vol_exwall+PB_vol_inwall
+        PB_calc.append(PB_vol)
+        
+        #Windows 
         Glass_vol = CHEP_co2['Glass(m2)'].iloc[i]*Glass_em
         Glass_calc.append(Glass_vol)
         
-        
+        #Insulation
         insul_roof = roof_insul_em*roof_insul_density
         insul_wall = wall_insul_em*wall_insul_density
         insul_inwall = inwall_insul_em*inwall_insul_density
@@ -448,24 +464,23 @@ with st.container():
         insul_vol = (CHEP_co2['ins_Roof(m3)'].iloc[i]*insul_roof)+(CHEP_co2['ins_ExWall(m3)'].iloc[i]*insul_wall)+(CHEP_co2['ins_IntWall(m3)'].iloc[i]*insul_inwall)
         insul_calc.append(insul_vol)
         
-        
+        #Shades
         alum_vol = CHEP_co2['ShadeArea(m2)'].iloc[i]*alum_em
         alum_calc.append(alum_vol)
         
-        
+        #Summing up layers for each envelope component
         roof_contribution.append(CHEP_co2['Conc_Roof(m3)'].iloc[i]*roof_concrete_em+CHEP_co2['PB_Roof(m3)'].iloc[i]*PB_1m*roof_PB_em+CHEP_co2['PB_Roof(m3)'].iloc[i]*PB_1m*roof_PB_em+insul_roof) 
         wall_contribution.append(CHEP_co2['Conc_ExWall(m3)'].iloc[i]*wall_concrete_em+CHEP_co2['PB_ExWall(m3)'].iloc[i]*PB_1m*wall_PB_em+CHEP_co2['PB_ExWall(m3)'].iloc[i]*PB_1m*wall_PB_em+insul_wall)
         inwall_contribution.append(CHEP_co2['PB_IntWall(m3)'].iloc[i]*PB_1m*inwall_PB_em+CHEP_co2['PB_IntWall(m3)'].iloc[i]*PB_1m*inwall_PB_em+insul_inwall)
         glass_contribution = Glass_calc
         shades_contribution = alum_calc
         
-        
+        #Listing single iteration values from the 'for loop'
         iteration_calc.append([concrete_vol,PB_vol,Glass_vol,alum_vol,insul_vol])
-        
+        #Summing up the values for single iteration values from the 'for loop'
         sum_contributions = concrete_vol+PB_vol+Glass_vol+alum_vol+insul_vol
-        
+        #WoL Calculations for each iteration
         WoL_value = CHEP_co2['EUI (kWh/m2)'].iloc[i]*Floor_area*grid_factor*num_years + round(sum_contributions,2)
-        
         WoL.append(WoL_value)
         
         
@@ -518,9 +533,9 @@ REF_insul_em = 4 #glasswool
 REF_glass_em = 61.4 #Laminated glass sheet 8.38mm
 
 data_ref = {'WWR':'60%','Shade Depth':'No Shades','SHGC': 0.46, 'EXT Walls':'R1.4', 
-            'Concrete Type (Roof/Floor)':f'Concrete 32MPA, Emission Factor: {REF_concrete_em}', 'Concrete Type (EXT Walls)':f'Concrete 20MPA, Emission Factor: {REF_wall_em}',
-            'PB Type': f'Emission Factor: {REF_PB_em}', 'Insulation Type':f'Glasswool, Emission Factor: {REF_insul_em}',
-            'Glass Type':f'Laminated glass sheet 8.38mm, Emission Factor: {REF_glass_em}'}
+            'Concrete (Roof/Floor)':f'Concrete 32MPA, Emission Factor: {REF_concrete_em}', 'Concrete (EXT Walls)':f'Concrete 20MPA, Emission Factor: {REF_wall_em}',
+            'Plaster Board': f'13mm, Emission Factor: {REF_PB_em}', 'Insulation':f'Glasswool, Emission Factor: {REF_insul_em}',
+            'Glass':f'Laminated glass sheet 8.38mm, Emission Factor: {REF_glass_em}'}
 
 REF_DF = pd.DataFrame([data_ref], index = ['Reference Case'])
 
