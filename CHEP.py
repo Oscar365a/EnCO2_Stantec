@@ -5,6 +5,10 @@ from PIL import Image
 import plotly.graph_objects as go
 
 
+# from sklearn.model_selection import train_test_split
+# from sklearn.linear_model import LinearRegression
+
+
 st.set_page_config(page_title='Project Parametric Analysis', layout='wide')
 
 CHEP_en = pd.read_csv('./data/Energy.csv')
@@ -23,6 +27,8 @@ st.markdown('---')
 
 Floor_area = 2310.5  ##########
 en_price = 0.2 ###$/kWh
+
+
 #Energy Cost Calc
 
 CHEP_en['Energy Cost (AU$/yr)'] = CHEP_en['EUI (kWh/m2)']*Floor_area*en_price
@@ -132,7 +138,6 @@ with st.container():
        'OT26% - Patient North', 'OT26% - Patient South', ]
     
     
-        
     chep_pcm = px.parallel_coordinates(CHEP_en, columns, color="EUI (kWh/m2)",
                                        labels={"ShadeDepth": "ShadeDepth", "ExWall":"ExWall"},
                                        color_continuous_scale=px.colors.cyclical.Edge,
@@ -205,6 +210,39 @@ with st.container():
 def get_index(df) -> dict:
         dict_ = {df['Version: EPiC Database 2019'].iloc[i]: i for i in range(0, len(df['Version: EPiC Database 2019']))}
         return dict_
+
+#Correlations
+#-------------------------------------------------------------------------------------------------------------------------------------
+
+CHEP_lm = CHEP_en.drop(['img', 'REF_ELECp', 'REF_CLGp', 'REF_DA','REF_ExcDA'], axis=1)
+
+
+CHEP_CORR_HTM = px.imshow(round(CHEP_lm.corr(),2),text_auto=True,color_continuous_scale='thermal',  width = 1000, height = 1000,title = 'Design Input Correlations with Energy/Comfort Targets')
+CHEP_CORR_HTM.update_traces(textfont_size=15)
+
+st.plotly_chart(CHEP_CORR_HTM, use_container_width=True)
+
+st.markdown('**:red[Note:]** Numbers represent the magnitude level of variables against each other, and Negative Values mean the input impacts the target negatively.')
+
+#Linear Regression
+#-------------------------------------------------------------------------------------------------------------------------------------
+
+# X = CHEP_lm[['WWR-NS', 'WWR-EW', 'ShadeDepth', 'SHGC', 'VLT', 'ExWall']]
+
+# y = CHEP_lm[['EUI (kWh/m2)', 'ELECp (W/m2)', 'CLGp (W/m2)', 'Daylight Autonomy',
+#        'Excessive Daylight', 'OT26% - Patient North', 'OT26% - Patient South','EUI Saved(-)Wasted(+)','Energy Cost (AU$/yr)']]
+
+# X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.8, random_state=101)
+
+# lm = LinearRegression()
+
+# lm.fit(X_train,y_train)
+
+# CHEP_en_cdf = pd.DataFrame(np.transpose(lm.coef_),X.columns,columns=[['EUI (kWh/m2)', 'ELECp (W/m2)', 'CLGp (W/m2)', 'Daylight Autonomy',
+#        'Excessive Daylight', 'OT26% - Patient North', 'OT26% - Patient South','EUI Saved(-)Wasted(+)','Energy Cost (AU$/yr)']])
+
+# st.dataframe(CHEP_en_cdf, use_container_width=True)
+
 
 ####################################################################################################################
 #CARBON SECTION
@@ -340,6 +378,7 @@ with st.sidebar:
     
     
 #Scenario Type Selection
+#-------------------------------------------------------------------------------------------------------------------------------------
 
 with st.sidebar:
     
@@ -363,6 +402,7 @@ with st.sidebar:
     st.markdown(f'**Grid Emission Factor is {round(grid_factor,2)}.**')
     
 #CO2 PCM
+#-------------------------------------------------------------------------------------------------------------------------------------
 
 with st.container():
     
@@ -379,6 +419,7 @@ with st.container():
     roof_contribution = []
     wall_contribution = []
     inwall_contribution = []
+    WoL = []
     
     
     for i in range(0, len(CHEP_co2)):
@@ -421,6 +462,12 @@ with st.container():
         
         iteration_calc.append([concrete_vol,PB_vol,Glass_vol,alum_vol,insul_vol])
         
+        sum_contributions = concrete_vol+PB_vol+Glass_vol+alum_vol+insul_vol
+        
+        WoL_value = CHEP_co2['EUI (kWh/m2)'].iloc[i]*Floor_area*grid_factor*num_years + round(sum_contributions,2)
+        
+        WoL.append(WoL_value)
+        
         
         
     calc_df_raw = pd.DataFrame([concrete_calc,PB_calc,Glass_calc,alum_calc,insul_calc])
@@ -434,7 +481,7 @@ with st.container():
     CHEP_co2['glass_contribution'] = glass_contribution
     CHEP_co2['shades_contribution'] = shades_contribution
     
-    CHEP_co2['WoL (KgCO2e)'] = ((CHEP_co2['EUI (kWh/m2)'].iloc[i]*Floor_area*grid_factor*num_years)+round(calc_df['Total'],2))
+    CHEP_co2['WoL (KgCO2e)'] = WoL
     
     CHEP_co2['UpfrontCO2 (KgCO2e)'] = calc_df['Total']
     
@@ -449,6 +496,7 @@ with st.container():
     st.plotly_chart(chep_pcm_co, use_container_width=True)
 
 #REFERENCE UPFRONT CALCS
+#-------------------------------------------------------------------------------------------------------------------------------------
 
 REF_roof_Concrete = 473.70 #####
 REF_wall_Concrete = 90.03  #####
@@ -490,6 +538,7 @@ DTS_Upfront = concrete_calc_REF+PB_calc_REF+insul_calc_REF+Glass_calc_REF
 DtS_WoL = (REF_EUI*Floor_area*grid_factor*num_years)+round(DTS_Upfront,2)
 
 #CO2 Metrics
+#-------------------------------------------------------------------------------------------------------------------------------------
 
 with st.container():
     
@@ -525,7 +574,7 @@ with st.container():
     with cols[5]:
         ""
 #Pie Charts
-
+#-------------------------------------------------------------------------------------------------------------------------------------
 
 with st.container():
     
@@ -548,7 +597,7 @@ with st.container():
     with cols[2]:
         ""
     
-    cols = st.columns([2.3,0.5,2.3,0.5,2.3,0.5])
+    cols = st.columns([2.3,0.2,2.3,0.2,2.3])
     with cols[0]:
         
         chep_bar_CO2_contr = go.Figure(data=[
@@ -557,7 +606,7 @@ with st.container():
             marker_color= ['yellow','lightgreen','darkgreen','cyan','purple'])])
 
         chep_bar_CO2_contr.update_traces(marker_line_width=1.5, opacity=0.95)
-        chep_bar_CO2_contr.update_layout(title_text='Envelope Contributions to Upfront CO2 (Proposed Case) ')
+        chep_bar_CO2_contr.update_layout(title_text='Envelope Contributions to Upfront CO2 (Proposed Selection) ')
     
         st.plotly_chart(chep_bar_CO2_contr,use_container_width=True)
         
@@ -572,7 +621,7 @@ with st.container():
             marker_color= ['brown','Grey','darkblue','lightgrey','lightyellow'])])
 
         chep_bar_CO2.update_traces(marker_line_width=1.5, opacity=0.95)
-        chep_bar_CO2.update_layout(title_text='Material Contributions to Upfront CO2 (Proposed Case)')
+        chep_bar_CO2.update_layout(title_text='Material Contributions to Upfront CO2 (Proposed Selection)')
     
         st.plotly_chart(chep_bar_CO2,use_container_width=True)
         
@@ -589,12 +638,10 @@ with st.container():
             marker_color= ['lightblue','Red','lightblue','Red'], width=[0.5, 0.5, 0.5, 0.5, 0.5])])
 
         chep_bar_CO2_DtS.update_traces(marker_line_width=1.5, opacity=0.75)
-        chep_bar_CO2_DtS.update_layout(title_text='Proposed vs. Reference')
+        chep_bar_CO2_DtS.update_layout(title_text='Proposed Selection vs. Reference Case')
         
         st.plotly_chart(chep_bar_CO2_DtS,use_container_width=True)
         
-    with cols[5]:
-        ""
         
 #Box Plots
 
@@ -638,3 +685,18 @@ with st.container():
         st.plotly_chart(chep_bx_29, use_container_width=True)
         
         
+#Correlations
+#-------------------------------------------------------------------------------------------------------------------------------------
+
+
+CHEP_co2_lm = CHEP_co2.drop(['VLT','Conc_Roof(m3)', 'Conc_ExWall(m3)', 'Conc_Floor(m3)','ins_Roof(m3)', 'ins_ExWall(m3)', 'ins_IntWall(m3)', 
+                             'PB_Roof(m3)','PB_ExWall(m3)', 'PB_IntWall(m3)', 'Glass(m2)', 'ShadeArea(m2)','roof_contribution', 
+                             'wall_contribution', 'inwall_contribution', 'glass_contribution', 'shades_contribution','UpfrontCO2 (KgCO2e)'], axis=1)
+
+
+CHEP_co2_CORR_HTM = px.imshow(round(CHEP_co2_lm.corr(),2),text_auto=True,color_continuous_scale='greens',  width = 1000, height = 1000,title = 'Design Input Correlations with Carbon Targets')
+CHEP_co2_CORR_HTM.update_traces(textfont_size=15)
+
+st.plotly_chart(CHEP_co2_CORR_HTM, use_container_width=True)
+
+st.markdown('**:red[Note:]** Numbers represent the magnitude level of variables against each other, and Negative Values mean the input impacts the target negatively.')
