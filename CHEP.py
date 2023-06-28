@@ -488,13 +488,19 @@ with st.container():
         Wol_scenario_one = []
         Wol_scenario_two = []
         years = []
-        for yrs in range(1,21):
+        for yrs in range(0,21):
             
             scenario_one_grid = (ln(yrs)*-0.147) + 0.9121
             scenario_two_grid = (ln(yrs)*-0.309) + 0.9413
-            years.append(f' Year {yrs}')
-            Wol_scenario_one.append(CHEP_co2['EUI (kWh/m2)'].iloc[i]*Floor_area*yrs + round(sum_contributions,2))
-            Wol_scenario_two.append(CHEP_co2['EUI (kWh/m2)'].iloc[i]*Floor_area*scenario_one_grid*yrs + round(sum_contributions,2))
+            
+            if yrs == 0:
+                years.append(f' Year {yrs}')
+                Wol_scenario_one.append(round(sum_contributions,2))
+                Wol_scenario_two.append(round(sum_contributions,2))
+            else:
+                years.append(f' Year {yrs}')
+                Wol_scenario_one.append(CHEP_co2['EUI (kWh/m2)'].iloc[i]*Floor_area*scenario_one_grid*yrs)
+                Wol_scenario_two.append(CHEP_co2['EUI (kWh/m2)'].iloc[i]*Floor_area*scenario_two_grid*yrs)
 
         
       
@@ -629,7 +635,7 @@ with st.container():
         Wol_scenarios = pd.DataFrame([Wol_scenario_one,Wol_scenario_two, years]).transpose()
         Wol_scenarios.rename(columns = {0:'Scenario One',1: 'Scenario Two'},inplace = True)
         Wol_scenarios.set_index(2,inplace = True)
-        Wol_scenarios = px.line(Wol_scenarios, labels = {'index':'Years', 'value':'WoL (KgCO2e)', '2':''}, markers = True)
+        Wol_scenarios = px.line(Wol_scenarios, labels = {'index':'Years', 'value':'Carbon (KgCO2e)', '2':''}, markers = True)
         Wol_scenarios.update_layout(title_text='WoL Performance for the next 20 years')
         st.plotly_chart(Wol_scenarios, use_container_width=True)
     
