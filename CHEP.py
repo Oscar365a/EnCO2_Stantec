@@ -594,7 +594,7 @@ with st.container():
         
         return TotalCO2, WoL_, EUI4co2, iteration_index, roofcontr, wallcontr, inwallcontr, windowscontr, shadescontr
             
-    cols = st.columns([0.1,0.7,0.7,0.7,0.7,0.1])
+    cols = st.columns([0.1,0.7,0.7,0.7,0.7,0.7,0.7,0.1])
     with cols[0]:
         ""
     with cols[1]:
