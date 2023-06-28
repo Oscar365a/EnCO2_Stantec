@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 from PIL import Image
 import plotly.graph_objects as go
-
+import numpy as np
 
 # from sklearn.model_selection import train_test_split
 # from sklearn.linear_model import LinearRegression
@@ -401,6 +401,7 @@ with st.sidebar:
     
     st.markdown(f'**Grid Emission Factor is {round(grid_factor,2)}.**')
     
+    
 #CO2 PCM
 #-------------------------------------------------------------------------------------------------------------------------------------
 
@@ -483,8 +484,20 @@ with st.container():
         WoL_value = CHEP_co2['EUI (kWh/m2)'].iloc[i]*Floor_area*grid_factor*num_years + round(sum_contributions,2)
         WoL.append(WoL_value)
         
+        #For WoL line plot to compare on time basis
+        Wol_scenario_one = []
+        Wol_scenario_two = []
+        years = []
+        for yrs in range(1,21):
+            
+            scenario_one_grid = (ln(yrs)*-0.147) + 0.9121
+            scenario_two_grid = (ln(yrs)*-0.309) + 0.9413
+            years.append(f' Year {yrs}')
+            Wol_scenario_one.append(CHEP_co2['EUI (kWh/m2)'].iloc[i]*Floor_area*yrs + round(sum_contributions,2))
+            Wol_scenario_two.append(CHEP_co2['EUI (kWh/m2)'].iloc[i]*Floor_area*scenario_one_grid*yrs + round(sum_contributions,2))
+
         
-        
+      
     calc_df_raw = pd.DataFrame([concrete_calc,PB_calc,Glass_calc,alum_calc,insul_calc])
     calc_df = calc_df_raw.transpose()
     calc_df = calc_df.rename(columns={0:'concrete_calc', 1:'PB_calc',2:'Glass_calc',3:'alum_calc',4:'insul_calc'})
@@ -596,7 +609,7 @@ with st.container():
     st.dataframe(REF_DF, use_container_width=True)
     
     
-    cols = st.columns([1,3,1])
+    cols = st.columns([0.5,3,3,0.5])
     with cols[0]:
         ""
     with cols[1]:
@@ -610,8 +623,20 @@ with st.container():
         st.plotly_chart(chep_pie_co2,use_container_width=True)
         
     with cols[2]:
-        ""
+        #WoL Scenarios
+        #-------------------------------------------------------------------------------------------------------------------------------------
+        
+        Wol_scenarios = pd.DataFrame([Wol_scenario_one,Wol_scenario_two, years]).transpose()
+        Wol_scenarios.rename(columns = {0:'Scenario One',1: 'Scenario Two'},inplace = True)
+        Wol_scenarios.set_index(2,inplace = True)
+        Wol_scenarios = px.line(Wol_scenarios, labels = {'index':'Years', 'value':'WoL (KgCO2e)', '2':''}, markers = True)
+        Wol_scenarios.update_layout(title_text='WoL Performance for the next 20 years')
+        st.plotly_chart(Wol_scenarios, use_container_width=True)
     
+    with cols[3]:
+        ""       
+        
+        
     cols = st.columns([2.3,0.2,2.3,0.2,2.3])
     with cols[0]:
         
@@ -715,3 +740,4 @@ CHEP_co2_CORR_HTM.update_traces(textfont_size=15)
 st.plotly_chart(CHEP_co2_CORR_HTM, use_container_width=True)
 
 st.markdown('**:red[Note:]** Numbers represent the magnitude level of variables against each other, and Negative Values mean the input impacts the target negatively.')
+
