@@ -606,7 +606,11 @@ with st.container():
     with cols[4]:
         st.metric(f'Reference Whole of Life (kgCO2e/{num_years}yrs)', int(round(DtS_WoL,0)))
     with cols[5]:
-        ""
+        st.metric('% Embodied CO2 Improvement (kgCO2e)', round((1 - (int(round(get_metrics_CO2()[0],0))/int(round(DTS_Upfront,0))))*100,2))
+    with cols[6]:
+        st.metric(f'% Whole of Life Improvement (kgCO2e/{num_years}yrs)', round((1-(int(round(get_metrics_CO2()[1],0)) / int(round(DtS_WoL,0))))*100,2))
+    with cols[7]:
+       ""
 #Pie Charts
 #-------------------------------------------------------------------------------------------------------------------------------------
 
