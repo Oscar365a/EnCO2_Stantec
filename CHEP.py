@@ -287,7 +287,7 @@ with st.sidebar:
         roof_insul_unit = roof_insul['Functional unit'].iloc[int(get_index(roof_insul)[roof_insul_selection])]
         roof_insul_em = roof_insul['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(roof_insul)[roof_insul_selection])]
         st.markdown(f'Unit: {roof_insul_unit} | Emission Factor (kgCO₂e): {roof_insul_em}')
-        roof_insul_density = st.number_input('Insulation Density (Kg/m3)', min_value=10, max_value=50, value = 40, key='insul-roof-den')
+        roof_insul_density = st.number_input('Insulation Density (Kg/m3)', min_value=10, max_value=40, value = 18, key='insul-roof-den')
         
     with st.expander('External Walls'):
         
@@ -319,7 +319,7 @@ with st.sidebar:
         wall_insul_unit = wall_insul['Functional unit'].iloc[int(get_index(wall_insul)[wall_insul_selection])]
         wall_insul_em = wall_insul['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(wall_insul)[wall_insul_selection])]
         st.markdown(f'Unit: {wall_insul_unit} | Emission Factor (kgCO₂e): {wall_insul_em}')
-        wall_insul_density = st.number_input('Insulation Density (Kg/m3)', min_value=10, max_value=50, value = 40, key='insul-wall-den')
+        wall_insul_density = st.number_input('Insulation Density (Kg/m3)', min_value=10, max_value=40, value = 18, key='insul-wall-den')
         
     with st.expander('Internal Walls'):
         
@@ -341,7 +341,7 @@ with st.sidebar:
         inwall_insul_unit = inwall_insul['Functional unit'].iloc[int(get_index(inwall_insul)[inwall_insul_selection])]
         inwall_insul_em = inwall_insul['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(inwall_insul)[inwall_insul_selection])]
         st.markdown(f'Unit: {inwall_insul_unit} | Emission Factor (kgCO₂e): {inwall_insul_em}')
-        inwall_insul_density = st.number_input('Insulation Density (Kg/m3)', min_value=10, max_value=50, value = 40, key='insul-inwall-den')
+        inwall_insul_density = st.number_input('Insulation Density (Kg/m3)', min_value=10, max_value=40, value = 18, key='insul-inwall-den')
         
     with st.expander('Floors'):
         
@@ -529,12 +529,12 @@ REF_EUI = 148.98 #####
 REF_concrete_em = 416 #concrete 32MPA for roof/floors
 REF_wall_em = 328 #concrete 20MPA
 REF_PB_em = 6.5 #13mm
-REF_insul_em = 4 #glasswool
+REF_insul_em = 72 #glasswool 18 kg/m3 (4*18)
 REF_glass_em = 61.4 #Laminated glass sheet 8.38mm
 
 data_ref = {'WWR':'60%','Shade Depth':'No Shades','SHGC': 0.46, 'EXT Walls':'R1.4', 
             'Concrete (Roof/Floor)':f'Concrete 32MPA, Emission Factor: {REF_concrete_em}', 'Concrete (EXT Walls)':f'Concrete 20MPA, Emission Factor: {REF_wall_em}',
-            'Plaster Board': f'13mm, Emission Factor: {REF_PB_em}', 'Insulation':f'Glasswool, Emission Factor: {REF_insul_em}',
+            'Plaster Board': f'13mm, Emission Factor: {REF_PB_em}', 'Insulation':f'Glasswool 18kg/m3, Emission Factor: {REF_insul_em}',
             'Glass':f'Laminated glass sheet 8.38mm, Emission Factor: {REF_glass_em}'}
 
 REF_DF = pd.DataFrame([data_ref], index = ['Reference Case'])
