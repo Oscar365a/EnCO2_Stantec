@@ -428,25 +428,25 @@ with st.container():
         concrete_calc.append(concrete_vol)
         #Plasterboard
         if (roof_PB_selection == 'Plasterboard - 10 mm'):
-            PB_1m = 1/0.01
+            PB_1m = 0.01
             PB_vol_roof = (CHEP_co2['PB_Roof(m3)'].iloc[i]*PB_1m*roof_PB_em)
             
         elif (roof_PB_selection == 'Plasterboard - 13 mm') or (wall_PB_selection == 'Plasterboard - 13 mm') or (inwall_PB_selection == 'Plasterboard - 13 mm'):
-            PB_1m = 1/0.013
+            PB_1m = 0.013
             PB_vol_roof = (CHEP_co2['PB_Roof(m3)'].iloc[i]*PB_1m*roof_PB_em)
         
         if (wall_PB_selection == 'Plasterboard - 10 mm'):
-            PB_1m = 1/0.01
+            PB_1m = 0.01
             PB_vol_exwall = (CHEP_co2['PB_ExWall(m3)'].iloc[i]*PB_1m*wall_PB_em)
         elif (wall_PB_selection == 'Plasterboard - 13 mm'):
-            PB_1m = 1/0.013
+            PB_1m = 0.013
             PB_vol_exwall = (CHEP_co2['PB_ExWall(m3)'].iloc[i]*PB_1m*wall_PB_em)
         
         if (inwall_PB_selection == 'Plasterboard - 10 mm'):
-            PB_1m = 1/0.01
+            PB_1m = 0.01
             PB_vol_inwall = (CHEP_co2['PB_IntWall(m3)'].iloc[i]*PB_1m*wall_PB_em)
         elif (inwall_PB_selection == 'Plasterboard - 13 mm'):
-            PB_1m = 1/0.013
+            PB_1m = 0.013
             PB_vol_inwall = (CHEP_co2['PB_IntWall(m3)'].iloc[i]*PB_1m*wall_PB_em)
         
         PB_vol = PB_vol_roof+PB_vol_exwall+PB_vol_inwall
