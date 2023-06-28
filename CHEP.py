@@ -98,15 +98,15 @@ with st.container():
     with cols[0]:
         ""
     with cols[1]:
-        st.metric('EUI(kWh/m2)', get_metrics_EUI()[9])
+        st.metric('EUI(kWh/m2)', f'{get_metrics_EUI()[9].iloc[0]} %' )
     with cols[2]:
-        st.metric('ELECp(W/m2)', get_metrics_EUI()[10])
+        st.metric('ELECp(W/m2)', f'{get_metrics_EUI()[10].iloc[0]} %')
     with cols[3]:
-        st.metric('CLGp(W/m2)', get_metrics_EUI()[11]) 
+        st.metric('CLGp(W/m2)', f'{get_metrics_EUI()[11].iloc[0]} %') 
     with cols[4]:
-        st.metric('Daylight Autonomy% (500lx)', get_metrics_EUI()[12])
+        st.metric('Daylight Autonomy (500lx)', f'{get_metrics_EUI()[12].iloc[0]} %')
     with cols[5]:
-        st.metric('Excessive Daylight% (>10000lx)', get_metrics_EUI()[13])
+        st.metric('Excessive Daylight (>10000lx)', f'{get_metrics_EUI()[13].iloc[0]} %')
     with cols[6]:
         ""
     
