@@ -640,7 +640,7 @@ with st.container():
         Wol_scenarios.rename(columns = {0:'Scenario One',1: 'Scenario Two'},inplace = True)
         Wol_scenarios.set_index(2,inplace = True)
         Wol_scenarios = px.line(Wol_scenarios, labels = {'index':'Years', 'value':'Carbon (KgCO2e)', '2':''}, markers = True)
-        Wol_scenarios.update_layout(title_text='WoL Performance for the next 20 years')
+        Wol_scenarios.update_layout(title_text='Carbon Impact')
         st.plotly_chart(Wol_scenarios, use_container_width=True)
     
     with cols[3]:
