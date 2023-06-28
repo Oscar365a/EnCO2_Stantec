@@ -619,7 +619,7 @@ with st.container():
     st.dataframe(REF_DF, use_container_width=True)
     
     
-    cols = st.columns([0.5,3,3,0.5])
+    cols = st.columns([0.05,3,0.5,3,0.05])
     with cols[0]:
         ""
     with cols[1]:
@@ -631,8 +631,9 @@ with st.container():
         chep_pie_co2.update_traces(textposition='inside', textinfo='percent+label')
         chep_pie_co2.update_layout(title_text='Proposed Case')
         st.plotly_chart(chep_pie_co2,use_container_width=True)
-        
     with cols[2]:
+        ""
+    with cols[3]:
         #WoL Scenarios
         #-------------------------------------------------------------------------------------------------------------------------------------
         
@@ -643,7 +644,7 @@ with st.container():
         Wol_scenarios.update_layout(title_text='Carbon Impact')
         st.plotly_chart(Wol_scenarios, use_container_width=True)
     
-    with cols[3]:
+    with cols[4]:
         ""       
         
         
