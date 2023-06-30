@@ -3,7 +3,6 @@ import pandas as pd
 import plotly.express as px
 from PIL import Image
 import plotly.graph_objects as go
-import numpy as np
 
 # from sklearn.model_selection import train_test_split
 # from sklearn.linear_model import LinearRegression
@@ -114,7 +113,7 @@ with st.container():
       
         #img = Image.open(rf'C:\Users\atabadkani\Streamlit Apps\CHEP\data\images\{get_metrics_EUI()[8].iloc[0]}')
         img = Image.open(f'./data/images/{get_metrics_EUI()[8].iloc[0]}')
-        #ref = Image.open(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\images\WWR-NS2_WWR-EW2_ShadeDepth0_SHGCVLT2_ExWall0.png')
+        #ref = Image.open(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\images\WWR-NS1_WWR-EW1_ShadeDepth0_SHGCVLT1_ExWall0.png')
         ref = Image.open('./data/images/WWR-NS2_WWR-EW2_ShadeDepth0_SHGCVLT2_ExWall0.png')
         return img, ref
     
@@ -531,30 +530,30 @@ with st.container():
 
 #REFERENCE UPFRONT CALCS
 #-------------------------------------------------------------------------------------------------------------------------------------
-
+#Volumes
 REF_roof_Concrete = 473.70 #####
-REF_wall_Concrete = 90.03  #####
+REF_wall_Concrete = 126.74  #####
 REF_floor_Concrete = 473.70 #####
 REF_roof_insul = 307.91 ####
-REF_wall_insul = 12.60 ####
+REF_wall_insul = 17.74 ####
 REF_inwall_insul = 154.24 ####
 REF_roof_PB = 30.79 ####
-REF_wall_PB = 5.85 ####
+REF_wall_PB = 8.23 ####
 REF_inwall_PB = 95.48 ###
-REF_glass = 633.702 ####
+REF_glass = 450.18 ####
 REF_shade = 0
-REF_EUI = 148.98 #####
+REF_EUI = 126.05 #####
 
 REF_concrete_em = 416 #concrete 32MPA for roof/floors
 REF_wall_em = 328 #concrete 20MPA
 REF_PB_em = 6.5 #13mm
 REF_insul_em = 72 #glasswool 18 kg/m3 (4*18)
-REF_glass_em = 61.4 #Laminated glass sheet 8.38mm
+REF_glass_em = 76.1 #Laminated glass sheet 10.38mm
 
-data_ref = {'WWR':'60%','Shade Depth':'No Shades','SHGC': 0.46, 'EXT Walls':'R1.4', 
+data_ref = {'WWR':'40%','Shade Depth':'No Shades','U-Value/SHGC/VLT': '3.91 / 0.30 / 0.38', 'EXT Walls':'R1.4', 
             'Concrete (Roof/Floor)':f'Concrete 32MPA, Emission Factor: {REF_concrete_em}', 'Concrete (EXT Walls)':f'Concrete 20MPA, Emission Factor: {REF_wall_em}',
             'Plaster Board': f'13mm, Emission Factor: {REF_PB_em}', 'Insulation':f'Glasswool 18kg/m3, Emission Factor: {REF_insul_em}',
-            'Glass':f'Laminated glass sheet 8.38mm, Emission Factor: {REF_glass_em}'}
+            'Glass':f'Laminated glass sheet 10.38mm, Emission Factor: {REF_glass_em}'}
 
 REF_DF = pd.DataFrame([data_ref], index = ['Reference Case'])
 
@@ -634,6 +633,7 @@ with st.container():
     with cols[2]:
         ""
     with cols[3]:
+        
         #WoL Scenarios
         #-------------------------------------------------------------------------------------------------------------------------------------
         
