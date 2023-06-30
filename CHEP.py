@@ -92,6 +92,12 @@ with st.container():
         ""
         
     st.subheader('Design Performance against Reference Case - % Saved (-) Wasted (+)')
+    
+    data_ref_eui = {'WWR':'40%','Shade Depth':'No Shades','U-Value/SHGC/VLT': '3.91 / 0.30 / 0.38', 'EXT Walls':'R1.4'}
+    REF_DF_eui = pd.DataFrame([data_ref_eui], index = ['Reference Case'])
+    st.dataframe(REF_DF_eui, use_container_width= True)
+    
+    
     cols = st.columns(7)
     
     with cols[0]:
@@ -114,7 +120,7 @@ with st.container():
         #img = Image.open(rf'C:\Users\atabadkani\Streamlit Apps\CHEP\data\images\{get_metrics_EUI()[8].iloc[0]}')
         img = Image.open(f'./data/images/{get_metrics_EUI()[8].iloc[0]}')
         #ref = Image.open(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\images\WWR-NS1_WWR-EW1_ShadeDepth0_SHGCVLT1_ExWall0.png')
-        ref = Image.open('./data/images/WWR-NS1_WWR-EW1_ShadeDepth0_SHGCVLT1_ExWall0.png')
+        ref = Image.open('./data/images/WWR-NS2_WWR-EW2_ShadeDepth0_SHGCVLT2_ExWall0.png')
         return img, ref
     
     col1,col2,col3,col4 = st.columns([1.5,4,0.5,4])
@@ -550,12 +556,12 @@ REF_PB_em = 6.5 #13mm
 REF_insul_em = 72 #glasswool 18 kg/m3 (4*18)
 REF_glass_em = 76.1 #Laminated glass sheet 10.38mm
 
-data_ref = {'WWR':'40%','Shade Depth':'No Shades','U-Value/SHGC/VLT': '3.91 / 0.30 / 0.38', 'EXT Walls':'R1.4', 
+data_ref_carbon = {'WWR':'40%','Shade Depth':'No Shades','U-Value/SHGC/VLT': '3.91 / 0.30 / 0.38', 'EXT Walls':'R1.4', 
             'Concrete (Roof/Floor)':f'Concrete 32MPA, Emission Factor: {REF_concrete_em}', 'Concrete (EXT Walls)':f'Concrete 20MPA, Emission Factor: {REF_wall_em}',
             'Plaster Board': f'13mm, Emission Factor: {REF_PB_em}', 'Insulation':f'Glasswool 18kg/m3, Emission Factor: {REF_insul_em}',
             'Glass':f'Laminated glass sheet 10.38mm, Emission Factor: {REF_glass_em}'}
 
-REF_DF = pd.DataFrame([data_ref], index = ['Reference Case'])
+REF_DF = pd.DataFrame([data_ref_carbon], index = ['Reference Case'])
 
 concrete_calc_REF = (REF_roof_Concrete*REF_concrete_em)+(REF_floor_Concrete*REF_concrete_em)+(REF_wall_Concrete*REF_wall_em)
 
