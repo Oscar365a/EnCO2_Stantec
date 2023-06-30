@@ -33,7 +33,7 @@ en_price = 0.2 ###$/kWh
 CHEP_en['Energy Cost (AU$/yr)'] = CHEP_en['EUI (kWh/m2)']*Floor_area*en_price
 
 with st.sidebar:
-    
+    st.image('https://www.ceros.com/wp-content/uploads/2019/04/Stantec_Logo.png',use_column_width='auto',output_format='PNG')
     st.title('Choose the Design Inputs:')
     
     WWR_NS = st.select_slider('Window-to-Wall Ratio (North-South):', options = [20, 40, 60, 80], value = 40, key = 'WWR_NS')
