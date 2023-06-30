@@ -93,7 +93,7 @@ with st.container():
         
     st.subheader('Design Performance against Reference Case - % Saved (-) Wasted (+)')
     
-    data_ref_eui = {'WWR':'40%','Shade Depth':'No Shades','U-Value/SHGC/VLT': '3.91 / 0.30 / 0.38', 'EXT Walls':'R1.4', 'Roof/Ceiling':'R3.7'}
+    data_ref_eui = {'WWR':'40%','Shade Depth':'No Shades','U-Value/SHGC/VLT': '3.91 / 0.30 / 0.38', 'EXT Walls':'R1.4', 'Roof/Ceiling':'R3.7', 'INT Walls':'R1.4'}
     REF_DF_eui = pd.DataFrame([data_ref_eui], index = ['Reference Case'])
     st.dataframe(REF_DF_eui, use_container_width= True)
     
