@@ -154,11 +154,11 @@ with st.container():
         
  
  
-    chep_bx_01 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["EUI (kWh/m2)"], "WWR-NS", notched = True)
-    chep_bx_02 = px.box(CHEP_en, CHEP_en["WWR-EW"], CHEP_en["EUI (kWh/m2)"], "WWR-EW", notched = True)
-    chep_bx_03 = px.box(CHEP_en, CHEP_en["ShadeDepth"], CHEP_en["EUI (kWh/m2)"], "ShadeDepth", notched = True)
-    chep_bx_04 = px.box(CHEP_en, CHEP_en["SHGC"], CHEP_en["EUI (kWh/m2)"], "SHGC", notched = True)
-    chep_bx_05 = px.box(CHEP_en, CHEP_en["ExWall"], CHEP_en["EUI (kWh/m2)"], "ExWall", notched = True)
+    chep_bx_01 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["EUI Saved(-)Wasted(+)"], "WWR-NS", notched = True)
+    chep_bx_02 = px.box(CHEP_en, CHEP_en["WWR-EW"], CHEP_en["EUI Saved(-)Wasted(+)"], "WWR-EW", notched = True)
+    chep_bx_03 = px.box(CHEP_en, CHEP_en["ShadeDepth"], CHEP_en["EUI Saved(-)Wasted(+)"], "ShadeDepth", notched = True)
+    chep_bx_04 = px.box(CHEP_en, CHEP_en["SHGC"], CHEP_en["EUI Saved(-)Wasted(+)"], "SHGC", notched = True)
+    chep_bx_05 = px.box(CHEP_en, CHEP_en["ExWall"], CHEP_en["EUI Saved(-)Wasted(+)"], "ExWall", notched = True)
 
     cols = st.columns(5)
     
