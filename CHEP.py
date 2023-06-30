@@ -114,7 +114,7 @@ with st.container():
         #img = Image.open(rf'C:\Users\atabadkani\Streamlit Apps\CHEP\data\images\{get_metrics_EUI()[8].iloc[0]}')
         img = Image.open(f'./data/images/{get_metrics_EUI()[8].iloc[0]}')
         #ref = Image.open(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\images\WWR-NS1_WWR-EW1_ShadeDepth0_SHGCVLT1_ExWall0.png')
-        ref = Image.open('./data/images/WWR-NS2_WWR-EW2_ShadeDepth0_SHGCVLT2_ExWall0.png')
+        ref = Image.open('./data/images/WWR-NS1_WWR-EW1_ShadeDepth0_SHGCVLT1_ExWall0.png')
         return img, ref
     
     col1,col2,col3,col4 = st.columns([1.5,4,0.5,4])
