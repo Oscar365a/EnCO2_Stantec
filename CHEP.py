@@ -21,7 +21,7 @@ chep_co2 = pd.read_csv('./data/CO2.csv')
 st.title("Project Parametric Analysis - 512 Iterations")
 
 st.markdown('---')
-st.header(":red[**ENERGY SECTION**]")
+st.header(":red[**BUILDING PERFORMANCE**]")
 st.markdown('---')
 
 Floor_area = 2310.5  ##########
