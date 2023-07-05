@@ -463,9 +463,9 @@ with st.container():
         Glass_calc.append(Glass_vol)
         
         #Insulation
-        insul_roof = roof_insul_em*roof_insul_density
-        insul_wall = wall_insul_em*wall_insul_density
-        insul_inwall = inwall_insul_em*inwall_insul_density
+        insul_roof = roof_insul_em
+        insul_wall = wall_insul_em
+        insul_inwall = inwall_insul_em
         
         insul_vol = (CHEP_co2['ins_Roof(m3)'].iloc[i]*insul_roof)+(CHEP_co2['ins_ExWall(m3)'].iloc[i]*insul_wall)+(CHEP_co2['ins_IntWall(m3)'].iloc[i]*insul_inwall)
         insul_calc.append(insul_vol)
