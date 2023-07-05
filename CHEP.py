@@ -290,9 +290,9 @@ with st.sidebar:
         roof_insul_type = ['Cellulose insulation','Glasswool insulation','Rockwool insulation']
         roof_insul_selection = st.selectbox('Insulation Type:', options=roof_insul_type, key='insul-roof', index = 1)
         roof_insul_unit = roof_insul['Functional unit'].iloc[int(get_index(roof_insul)[roof_insul_selection])]
-        roof_insul_em = roof_insul['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(roof_insul)[roof_insul_selection])]
-        st.markdown(f'Unit: {roof_insul_unit} | Emission Factor (kgCO₂e): {roof_insul_em}')
         roof_insul_density = st.number_input('Insulation Density (Kg/m3)', min_value=10, max_value=40, value = 18, key='insul-roof-den')
+        roof_insul_em = roof_insul['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(roof_insul)[roof_insul_selection])]*roof_insul_density
+        st.markdown(f'Unit: {roof_insul_unit} | Emission Factor (kgCO₂e): {roof_insul_em}')
         
     with st.expander('External Walls'):
         
@@ -322,9 +322,9 @@ with st.sidebar:
         wall_insul_type = ['Cellulose insulation','Glasswool insulation','Rockwool insulation']
         wall_insul_selection = st.selectbox('Insulation Type:', options=wall_insul_type, key='insul-wall', index = 1)
         wall_insul_unit = wall_insul['Functional unit'].iloc[int(get_index(wall_insul)[wall_insul_selection])]
-        wall_insul_em = wall_insul['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(wall_insul)[wall_insul_selection])]
-        st.markdown(f'Unit: {wall_insul_unit} | Emission Factor (kgCO₂e): {wall_insul_em}')
         wall_insul_density = st.number_input('Insulation Density (Kg/m3)', min_value=10, max_value=40, value = 18, key='insul-wall-den')
+        wall_insul_em = wall_insul['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(wall_insul)[wall_insul_selection])]*wall_insul_density
+        st.markdown(f'Unit: {wall_insul_unit} | Emission Factor (kgCO₂e): {wall_insul_em}')
         
     with st.expander('Internal Walls'):
         
@@ -344,9 +344,9 @@ with st.sidebar:
         inwall_insul_type = ['Cellulose insulation','Glasswool insulation','Rockwool insulation']
         inwall_insul_selection = st.selectbox('Insulation Type:', options=inwall_insul_type, key='insul-inwall', index = 1)
         inwall_insul_unit = inwall_insul['Functional unit'].iloc[int(get_index(inwall_insul)[inwall_insul_selection])]
-        inwall_insul_em = inwall_insul['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(inwall_insul)[inwall_insul_selection])]
-        st.markdown(f'Unit: {inwall_insul_unit} | Emission Factor (kgCO₂e): {inwall_insul_em}')
         inwall_insul_density = st.number_input('Insulation Density (Kg/m3)', min_value=10, max_value=40, value = 18, key='insul-inwall-den')
+        inwall_insul_em = inwall_insul['Embodied Greenhouse Gas Emissions (kgCO₂e)'].iloc[int(get_index(inwall_insul)[inwall_insul_selection])]*inwall_insul_density
+        st.markdown(f'Unit: {inwall_insul_unit} | Emission Factor (kgCO₂e): {inwall_insul_em}')
         
     with st.expander('Floors'):
         
