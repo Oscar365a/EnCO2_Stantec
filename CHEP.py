@@ -34,6 +34,8 @@ CHEP_en['Energy Cost (AU$/yr)'] = CHEP_en['EUI (kWh/m2)']*Floor_area*en_price
 
 with st.sidebar:
     st.image('https://www.ceros.com/wp-content/uploads/2019/04/Stantec_Logo.png',use_column_width='auto',output_format='PNG')
+
+    st.markdown('This tool is only built for demonstration purpose for the client to better understand the impact of different design variables on both building thermal and decabornization performance located in North Queensland, Australia')
     st.title('Choose the Design Inputs:')
     
     WWR_NS = st.select_slider('Window-to-Wall Ratio (North-South):', options = [20, 40, 60, 80], value = 40, key = 'WWR_NS')
