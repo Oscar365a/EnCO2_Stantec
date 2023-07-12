@@ -4,9 +4,11 @@ import plotly.express as px
 from PIL import Image
 import plotly.graph_objects as go
 
-# from sklearn.model_selection import train_test_split
-# from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import Ridge
 
+
+import numpy as np
 
 st.set_page_config(page_title='Project Parametric Analysis', layout='wide')
 
@@ -26,7 +28,7 @@ st.markdown('---')
 
 Floor_area = 2310.5  ##########
 en_price = 0.2 ###$/kWh
-
+REF_EUI = 126.05
 
 #Energy Cost Calc
 
@@ -34,8 +36,9 @@ CHEP_en['Energy Cost (AU$/yr)'] = CHEP_en['EUI (kWh/m2)']*Floor_area*en_price
 
 with st.sidebar:
     st.image('https://www.ceros.com/wp-content/uploads/2019/04/Stantec_Logo.png',use_column_width='auto',output_format='PNG')
-
     st.markdown('_This tool is only built for demonstration purpose for the client to better understand the impact of different design variables on both building thermal and decabornization performance located in North Queensland, Australia. Results should be interpreted as comparative only, and do not aim to predict actual building performance._')
+
+    
     st.title('Choose the Design Inputs:')
     
     WWR_NS = st.select_slider('Window-to-Wall Ratio (North-South):', options = [20, 40, 60, 80], value = 40, key = 'WWR_NS')
@@ -218,41 +221,107 @@ def get_index(df) -> dict:
         dict_ = {df['Version: EPiC Database 2019'].iloc[i]: i for i in range(0, len(df['Version: EPiC Database 2019']))}
         return dict_
 
-#Correlations
+#Ridge Regression
 #-------------------------------------------------------------------------------------------------------------------------------------
 
-CHEP_lm = CHEP_en.drop(['img', 'REF_ELECp', 'REF_CLGp', 'REF_DA','REF_ExcDA'], axis=1)
+CHEP_ridge = CHEP_en.drop(['img', 'REF_ELECp', 'REF_CLGp', 'REF_DA','REF_ExcDA'], axis=1)
 
 
-CHEP_CORR_HTM = px.imshow(round(CHEP_lm.corr(),2),text_auto=True,color_continuous_scale='thermal',  width = 1000, height = 1000,title = 'Design Input Correlations with Energy/Comfort Targets')
+CHEP_CORR_HTM = px.imshow(round(CHEP_ridge.corr(),2),text_auto=True,color_continuous_scale='thermal',  width = 1000, height = 1000,title = 'Design Input Correlations with Energy/Comfort Targets')
 CHEP_CORR_HTM.update_traces(textfont_size=15)
 
 st.plotly_chart(CHEP_CORR_HTM, use_container_width=True)
 
 st.markdown('**:red[Note:]** Numbers represent the magnitude level of variables against each other, and Negative Values mean the input impacts the target negatively.')
 
-#Linear Regression
-#-------------------------------------------------------------------------------------------------------------------------------------
+#Energy Tagets 
 
-# X = CHEP_lm[['WWR-NS', 'WWR-EW', 'ShadeDepth', 'SHGC', 'VLT', 'ExWall']]
+st.subheader("**Predicting Energy Targets Using Machine Learning**")
 
-# y = CHEP_lm[['EUI (kWh/m2)', 'ELECp (W/m2)', 'CLGp (W/m2)', 'Daylight Autonomy',
-#        'Excessive Daylight', 'OT26% - Patient North', 'OT26% - Patient South','EUI Saved(-)Wasted(+)','Energy Cost (AU$/yr)']]
+feature_energy_cols =  CHEP_ridge[['WWR-NS', 'WWR-EW', 'ShadeDepth', 'SHGC', 'ExWall']].columns
 
-# X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.8, random_state=101)
+X = pd.DataFrame(CHEP_ridge[['WWR-NS', 'WWR-EW', 'ShadeDepth', 'SHGC', 'ExWall']], columns = feature_energy_cols)
 
-# lm = LinearRegression()
+y = CHEP_ridge[['EUI (kWh/m2)', 'ELECp (W/m2)', 'CLGp (W/m2)', 'OT26% - Patient North', 'OT26% - Patient South','EUI Saved(-)Wasted(+)','Energy Cost (AU$/yr)']]
 
-# lm.fit(X_train,y_train)
+X_train_en, X_test_en, y_train_en, y_test_en = train_test_split(X,y,test_size=1)
 
-# CHEP_en_cdf = pd.DataFrame(np.transpose(lm.coef_),X.columns,columns=[['EUI (kWh/m2)', 'ELECp (W/m2)', 'CLGp (W/m2)', 'Daylight Autonomy',
-#        'Excessive Daylight', 'OT26% - Patient North', 'OT26% - Patient South','EUI Saved(-)Wasted(+)','Energy Cost (AU$/yr)']])
+ridge_en = Ridge(alpha=1.0)
+
+ridge_en.fit(X_train_en,y_train_en)
+
+CHEP_en_cdf = pd.DataFrame(np.transpose(ridge_en.coef_),X.columns,columns=[['EUI (kWh/m2)', 'ELECp (W/m2)', 'CLGp (W/m2)','OT26% - Patient North', 'OT26% - Patient South','EUI Saved(-)Wasted(+)','Energy Cost (AU$/yr)']])
 
 # st.dataframe(CHEP_en_cdf, use_container_width=True)
 
 
+#Daylight Targets ((((WIP))))
+
+# feature_daylight_cols =  CHEP_ridge[['WWR-NS', 'WWR-EW', 'ShadeDepth','VLT']].columns
+
+# X_ = pd.DataFrame(CHEP_ridge[['WWR-NS', 'WWR-EW', 'ShadeDepth','VLT']], columns = feature_daylight_cols)   
+# y_ = CHEP_ridge[["Daylight Autonomy",'Excessive Daylight']]
+
+# X_train_da, X_test_da, y_train_da, y_test_da = train_test_split(X_,y_,test_size=1)
+
+# ridge_da = Ridge(alpha=1.0)
+
+# ridge_da.fit(X_train_da,y_train_da)
+             
+
+#Predictions
+
+cols = st.columns(3)
+with cols[0]:
+    ""
+with cols[1]:
+    
+    new_WWR_NS = st.number_input('Desired Window-to-Wall Ratio (North-South):', min_value = 0, max_value = 100, value = 30, key = 'new_WWR_NS')
+    new_WWR_EW = st.number_input('Desired Window-to-Wall Ratio (East-West):', min_value = 0, max_value = 100, value = 50, key = 'new_WWR_EW')
+    new_shade = st.number_input('Desired Shade Depth (mm):', min_value = 0, max_value = 2000, value = 1000, key = 'new_shadedepth')
+    new_SHGC = st.number_input('Desired SHGC:', min_value = 0.05, max_value = 0.9, value = 0.8, key = 'new_shgc')
+    # new_vlt = st.number_input('Desired VLT:', min_value = 0.05, max_value = 0.9, value = 0.8, key = 'new_vlt')
+    new_exwall = st.number_input('Desired External Wall R-value:',  min_value = 0.5, max_value = 6.0, value = 3.5 , key = 'new_rvalue')
+    
+    new_vals_energy = np.array([new_WWR_NS,new_WWR_EW,new_shade,new_SHGC,new_exwall]).reshape(1,5)
+    new_energy_df = pd.DataFrame(new_vals_energy, columns = feature_energy_cols)
+    pred_energy = ridge_en.predict(new_energy_df)
+    pred_energy = np.transpose(pred_energy.tolist())
+    
+    # new_vals_daylight = np.array([new_WWR_NS,new_WWR_EW,new_shade,new_vlt]).reshape(1,4)
+    # new_daylight_df = pd.DataFrame(new_vals_daylight, columns = feature_daylight_cols)    
+    # pred_daylight = ridge_da.predict(new_daylight_df)
+    # pred_daylight = np.transpose(pred_daylight.tolist())
+    
+with cols[2]:
+    ""
+
+cols = st.columns(7)
+with cols[0]:
+    ""
+with cols[1]:
+    #EUI
+    st.metric('Predicted EUI(kWh/m2)', int(pred_energy[0]))
+with cols[2]:
+    #ELECp
+    st.metric('Predicted ELECp (W/m2)', int(pred_energy[1]))
+with cols[3]:
+    #CLGp
+    st.metric('Predicted CLGp (W/m2)', int(pred_energy[2]))
+# with cols[4]:
+#     #DA
+#     st.metric('Predicted Daylight Autonomy', int(pred_daylight[0]))
+with cols[4]:
+    #Cost
+    st.metric('Predicted Energy Cost (AU$/yr)', int(pred_energy[6]))
+with cols[5]:
+    #DtS
+    st.metric('Predicted EUI Saved(-)Wasted(+)', f'{round(((int(pred_energy[0])/REF_EUI)-1)*100,2)}%')
+with cols[6]:
+    ""
 ####################################################################################################################
 #CARBON SECTION
+
 st.markdown('---')
 st.header(":red[**CARBON SECTION**]")
 st.markdown('---')
