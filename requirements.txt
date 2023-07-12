@@ -4,5 +4,7 @@ pandas
 Pillow
 openpyxl
 sklearn
+sklearn.model_selection
+sklearn.linear_model
 train_test_split
 Ridge
