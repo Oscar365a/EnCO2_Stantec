@@ -3,4 +3,4 @@ streamlit
 pandas
 Pillow
 openpyxl
-sklearn.model_selection
+sklearn
