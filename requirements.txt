@@ -4,3 +4,5 @@ pandas
 Pillow
 openpyxl
 sklearn
+train_test_split
+Ridge
