@@ -12,6 +12,15 @@ import numpy as np
 
 st.set_page_config(page_title='Project Parametric Analysis', layout='wide')
 
+hide_st_style = """
+                <style>
+                #MainMenu {visibility: hidden;}
+                footer {visibility: hidden;}
+                </style>
+                """
+st.markdown(hide_st_style, unsafe_allow_html= True)
+
+
 CHEP_en = pd.read_csv('./data/Energy.csv')
 epic = pd.DataFrame(pd.read_excel('./data/EPiC.xlsx'))
 chep_co2 = pd.read_csv('./data/CO2.csv')
