@@ -150,7 +150,7 @@ with st.container():
     
            
         
-    cols = st.columns([0.01,0.8,0.8,0.8,0.8,0.8,0.01])
+    cols = st.columns([0.01,0.6,0.6,0.6,0.6,0.6,0.01])
             
             
     with cols[0]:
