@@ -150,13 +150,9 @@ with st.container():
     
            
         
-    cols = st.columns([0.01,0.6,0.6,0.6,0.6,0.6,0.01])
-            
+    cols = st.columns([0.6,0.6,0.6,0.6,0.6])
             
     with cols[0]:
-        ""
-        
-    with cols[1]:
         eui_performance = go.Figure(go.Indicator(
         mode = "gauge+delta",
         value = get_metrics_EUI()[0].iloc[0],
@@ -168,7 +164,7 @@ with st.container():
 
         st.plotly_chart(eui_performance, use_container_width=True)
     
-    with cols[2]:
+    with cols[1]:
         elec_performance = go.Figure(go.Indicator(
         mode = "gauge+delta",
         value = get_metrics_EUI()[1].iloc[0],
@@ -180,7 +176,7 @@ with st.container():
     
         st.plotly_chart(elec_performance, use_container_width=True)
         
-    with cols[3]:
+    with cols[2]:
         clg_performance = go.Figure(go.Indicator(
         mode = "gauge+delta",
         value = get_metrics_EUI()[2].iloc[0],
@@ -192,7 +188,7 @@ with st.container():
     
         st.plotly_chart(clg_performance,  use_container_width=False)
     
-    with cols[4]:
+    with cols[3]:
         DA_performance = go.Figure(go.Indicator(
         mode = "gauge+delta",
         value = get_metrics_EUI()[3].iloc[0],
@@ -204,7 +200,7 @@ with st.container():
     
         st.plotly_chart(DA_performance, use_container_width=True)
     
-    with cols[5]:
+    with cols[4]:
         glare_performance = go.Figure(go.Indicator(
         mode = "gauge+delta",
         value = get_metrics_EUI()[4].iloc[0],
@@ -215,11 +211,7 @@ with st.container():
         ))
     
         st.plotly_chart(glare_performance, use_container_width=True)
-    
-    with cols[6]:
-        ""
-        
-        
+  
         
     def loadImages():
       
