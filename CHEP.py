@@ -156,7 +156,7 @@ with st.container():
         eui_performance = go.Figure(go.Indicator(
         mode = "gauge+delta",
         value = get_metrics_EUI()[0].iloc[0],
-        delta = {'reference':REF_EUI, 'relative': True,'increasing':{'color':'red'}, 'decreasing':{'color':'Green'}, 'valueformat':".2", 'suffix':'%'},
+        delta = {'reference':REF_EUI, 'relative': True,'increasing':{'color':'red'}, 'decreasing':{'color':'Green'}, 'valueformat':".2%"},
         gauge = {'bar':{'color':'white', 'line':{'width':3}},'bordercolor':'darkgray','bgcolor':'lightgray', 'threshold':{'thickness':1,'value':REF_EUI}, 'axis':{'dtick':5,'range':(CHEP_en['EUI (kWh/m2)'].min(),CHEP_en['EUI (kWh/m2)'].max())}},
         number = {'font':{'family':'Arial', 'size':1}},
         title = {'text': "EUI Performance",'font':{'family':'Arial'}}
@@ -168,7 +168,7 @@ with st.container():
         elec_performance = go.Figure(go.Indicator(
         mode = "gauge+delta",
         value = get_metrics_EUI()[1].iloc[0],
-        delta = {'reference':REF_ELECp,  'relative': True,'increasing':{'color':'red'}, 'decreasing':{'color':'Green'},'valueformat':".2", 'suffix':'%'},
+        delta = {'reference':REF_ELECp,  'relative': True,'increasing':{'color':'red'}, 'decreasing':{'color':'Green'},'valueformat':".2%"},
         gauge = {'bar':{'color':'white', 'line':{'width':3}},'bordercolor':'darkgray','bgcolor':'lightgray', 'threshold':{'thickness':1,'value':REF_ELECp}, 'axis':{'dtick':2,'range':(CHEP_en['ELECp (W/m2)'].min(),CHEP_en['ELECp (W/m2)'].max())}},
         number = {'font':{'family':'Arial'}},
         title = {'text': "ELECp Performance",'font':{'family':'Arial'}}
@@ -180,7 +180,7 @@ with st.container():
         clg_performance = go.Figure(go.Indicator(
         mode = "gauge+delta",
         value = get_metrics_EUI()[2].iloc[0],
-        delta = {'reference':REF_CLGp, 'relative': True,'increasing':{'color':'red'}, 'decreasing':{'color':'Green'},'valueformat':".2", 'suffix':'%'},
+        delta = {'reference':REF_CLGp, 'relative': True,'increasing':{'color':'red'}, 'decreasing':{'color':'Green'},'valueformat':".2%"},
         gauge = {'bar':{'color':'white', 'line':{'width':3}},'bordercolor':'darkgray','bgcolor':'lightgray', 'threshold':{'thickness':1,'value':REF_CLGp}, 'axis':{'dtick':4,'range':(CHEP_en['CLGp (W/m2)'].min(),CHEP_en['CLGp (W/m2)'].max())}},
         number = {'font':{'family':'Arial'}},
         title = {'text': "CLGp Performance",'font':{'family':'Arial'}}
@@ -192,7 +192,7 @@ with st.container():
         DA_performance = go.Figure(go.Indicator(
         mode = "gauge+delta",
         value = get_metrics_EUI()[3].iloc[0],
-        delta = {'reference':REF_DA, 'relative': True,'increasing':{'color':'Green'}, 'decreasing':{'color':'Red'},'valueformat':".2", 'suffix':'%'},
+        delta = {'reference':REF_DA, 'relative': True,'increasing':{'color':'Green'}, 'decreasing':{'color':'Red'},'valueformat':".2%"},
         gauge = {'bar':{'color':'white', 'line':{'width':3}},'bordercolor':'darkgray','bgcolor':'lightgray', 'threshold':{'thickness':1,'value':REF_DA}, 'axis':{'dtick':5,'range':(CHEP_en['Daylight Autonomy'].min(),CHEP_en['Daylight Autonomy'].max())}},
         number = {'font':{'family':'Arial'}},
         title = {'text': "Daylight Level",'font':{'family':'Arial'}}
@@ -204,7 +204,7 @@ with st.container():
         glare_performance = go.Figure(go.Indicator(
         mode = "gauge+delta",
         value = get_metrics_EUI()[4].iloc[0],
-        delta = {'reference':REF_glare,'relative': True,'increasing':{'color':'red'}, 'decreasing':{'color':'Green'},'valueformat':".2", 'suffix':'%'},
+        delta = {'reference':REF_glare,'relative': True,'increasing':{'color':'red'}, 'decreasing':{'color':'Green'},'valueformat':".2%"},
         gauge = {'bar':{'color':'white', 'line':{'width':3}},'bordercolor':'darkgray','bgcolor':'lightgray', 'threshold':{'thickness':1,'value':REF_glare}, 'axis':{'dtick':2,'range':(CHEP_en['Excessive Daylight'].min(),CHEP_en['Excessive Daylight'].max())}},
         number = {'font':{'family':'Arial'}},
         title = {'text': "Discomfort Glare Level",'font':{'family':'Arial'}}
