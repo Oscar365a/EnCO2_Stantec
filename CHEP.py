@@ -250,7 +250,7 @@ with st.container():
     
     st.plotly_chart(chep_pcm, use_container_width=True)
 
-with st.expander('Box Plots):
+with st.expander('Box Plots'):
  
  
     chep_bx_01 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["EUI Saved(-)Wasted(+)"], "WWR-NS", notched = True)
