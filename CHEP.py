@@ -322,7 +322,7 @@ CHEP_ridge = CHEP_en.drop(['img', 'REF_ELECp', 'REF_CLGp', 'REF_DA','REF_ExcDA']
 
 with st.expander('Statistical Building Performance Correlations (Heat Map)'):
 
-  CHEP_CORR_HTM = px.imshow(round(CHEP_ridge.corr(),2),text_auto=True,color_continuous_scale='thermal',  width = 1000, height = 1000,title = 'Design Input Correlations with Energy/Comfort Targets')
+  CHEP_CORR_HTM = px.imshow(round(CHEP_ridge.corr(),2),text_auto=True,color_continuous_scale='thermal',  width = 1000, height = 1000)
   CHEP_CORR_HTM.update_traces(textfont_size=15)
   
   st.plotly_chart(CHEP_CORR_HTM, use_container_width=True)
@@ -918,7 +918,7 @@ CHEP_co2_lm = CHEP_co2.drop(['VLT','Conc_Roof(m3)', 'Conc_ExWall(m3)', 'Conc_Flo
                              'wall_contribution', 'inwall_contribution', 'glass_contribution', 'shades_contribution', 'EUI (kWh/m2)'], axis=1)
 
 with st.expander('Statistical WoL Carbon Correlations (Box Plots)'):
-  CHEP_co2_CORR_HTM = px.imshow(round(CHEP_co2_lm.corr(),2),text_auto=True,color_continuous_scale='greens',  width = 1000, height = 1000,title = 'Design Input Correlations with Carbon Targets')
+  CHEP_co2_CORR_HTM = px.imshow(round(CHEP_co2_lm.corr(),2),text_auto=True,color_continuous_scale='greens',  width = 1000, height = 1000)
   CHEP_co2_CORR_HTM.update_traces(textfont_size=15)
   
   st.plotly_chart(CHEP_co2_CORR_HTM, use_container_width=True)
