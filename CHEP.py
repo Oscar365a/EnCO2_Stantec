@@ -56,16 +56,16 @@ with st.sidebar:
     
     WWR_NS = st.select_slider('Window-to-Wall Ratio (North-South):', options = [20, 40, 60, 80], value = 40, key = 'WWR_NS') 
     WWR_EW = st.select_slider('Window-to-Wall Ratio (East-West):', options = [20, 40, 60, 80], value = 60, key = 'WWR_EW')
-    st.markdown("_WWR represents the amount of window area compared to the total wall area for the respective building facades. Higher ratios mean more window area, which can lead to more daylight but also potentially more heat gain or loss, depending on the climate and the window's properties._")
+    #st.markdown("_WWR represents the amount of window area compared to the total wall area for the respective building facades. Higher ratios mean more window area, which can lead to more daylight but also potentially more heat gain or loss, depending on the climate and the window's properties._")
 
     Shade_dep = st.select_slider('Shade Depth (mm):', options = [0, 300, 600, 900], value = 300, key = 'shadedepth')
-    st.markdown("_The depth of shading devices like overhangs or fins on a building's windows, measured in millimeters. Shading devices can significantly reduce the amount of solar heat gain in a building, improving comfort and reducing cooling loads._")
+    #st.markdown("_The depth of shading devices like overhangs or fins on a building's windows, measured in millimeters. Shading devices can significantly reduce the amount of solar heat gain in a building, improving comfort and reducing cooling loads._")
     
     SHGC = st.select_slider('SHGC:', options = [0.22,0.34,0.46,0.58], value = 0.46, key = 'glass_shgc')
-    st.markdown("_This is the fraction of incident solar radiation that is admitted through a window, both directly transmitted, and absorbed and subsequently released inward. It's expressed as a number between 0 and 1. The lower a window's SHGC, the less solar heat it transmits, which can help reduce cooling loads in hot climates._")
+    #st.markdown("_This is the fraction of incident solar radiation that is admitted through a window, both directly transmitted, and absorbed and subsequently released inward. It's expressed as a number between 0 and 1. The lower a window's SHGC, the less solar heat it transmits, which can help reduce cooling loads in hot climates._")
 
     exwall = st.select_slider('External Wall R-value:', options = [1.0,1.4], value = 1.4, key = 'exwall_r')
-    st.markdown("_The R-value measures the thermal resistance of a material or assembly like a wall. It's measured in m²/kw. The higher the R-value, the better the material or assembly is at resisting heat flow, which can reduce heating and cooling loads._")
+    #st.markdown("_The R-value measures the thermal resistance of a material or assembly like a wall. It's measured in m²/kw. The higher the R-value, the better the material or assembly is at resisting heat flow, which can reduce heating and cooling loads._")
 
     
 with st.container():
