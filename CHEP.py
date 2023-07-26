@@ -250,7 +250,7 @@ with st.container():
     
     st.plotly_chart(chep_pcm, use_container_width=True)
 
-with st.expander('Box Plots'):
+with st.expander('Statistical Correlations (Box Plots)'):
  
  
     chep_bx_01 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["EUI Saved(-)Wasted(+)"], "WWR-NS", notched = True)
@@ -866,7 +866,8 @@ with st.container():
         
         
 #Box Plots
-
+with st.expander('Statistical Correlations (Box Plots)'):
+  
     chep_bx_19 = px.box(CHEP_co2, CHEP_co2["WWR-NS"], CHEP_co2['UpfrontCO2 (KgCO2e)'], "WWR-NS", notched = True)
     chep_bx_20 = px.box(CHEP_co2, CHEP_co2["WWR-EW"], CHEP_co2['UpfrontCO2 (KgCO2e)'], "WWR-EW", notched = True)
     chep_bx_21 = px.box(CHEP_co2, CHEP_co2["ShadeDepth"], CHEP_co2['UpfrontCO2 (KgCO2e)'], "ShadeDepth",  notched = True)
