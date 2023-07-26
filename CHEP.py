@@ -366,7 +366,7 @@ CHEP_en_cdf = pd.DataFrame(np.transpose(ridge_en.coef_),X.columns,columns=[['EUI
 
 #Predictions
 
-cols = st.columns(3)
+cols = st.columns([0.1,1,0.2,2.5,0.1])
 with cols[0]:
     ""
 with cols[1]:
@@ -387,33 +387,78 @@ with cols[1]:
     # new_daylight_df = pd.DataFrame(new_vals_daylight, columns = feature_daylight_cols)    
     # pred_daylight = ridge_da.predict(new_daylight_df)
     # pred_daylight = np.transpose(pred_daylight.tolist())
-    
 with cols[2]:
+    ""
+with cols[3]:
+    
+    
+    stackData = {"Predicted EUI":[int(pred_energy[0])],
+                  "Reference EUI":[REF_EUI],
+                  "Predicted ELECp":[int(pred_energy[1])],
+                  "Reference ELECp":[REF_ELECp],
+                  'Predicted CLGp':[int(pred_energy[2])],
+                  "Reference CLGp":[REF_CLGp],
+                  "Predicted Cost":[int(pred_energy[6]/1000)],
+                  "Reference Cost":[int((REF_EUI*Floor_area*0.2)/1000)],
+                  "EUI":["EUI (kWh/m2)"],
+                  "ELECp":["ELECp (W/m2)"],
+                  "CLGp":["CLGp (W/m2)"],
+                  "Cost":["Operational Cost (1000$/yr)"]
+                  }
+    
+
+    
+    predicted_bar = go.Figure(data=[
+                        go.Bar(name = "Predicted EUI", x = stackData["EUI"], y=stackData["Predicted EUI"],
+                               offsetgroup=-1,marker_color = '#024a70', offset = -0.17, text = stackData["Predicted EUI"],textposition ='inside', width = 0.35, opacity = 0.8),
+                        go.Bar(name = "Reference EUI", x = stackData["EUI"], y=stackData["Reference EUI"],
+                               offsetgroup=-1,marker_color = '#051c2c', offset = -0.17,text = stackData["Reference EUI"], textposition ='inside', base=stackData["Predicted EUI"], width = 0.35, opacity = 0.8),
+                        go.Bar(name = "Predicted ELECp", x = stackData["ELECp"],y=stackData["Predicted ELECp"],
+                               offsetgroup=2,marker_color = '#abe5f0',offset = -0.17, text = stackData["Predicted ELECp"], textposition ='inside',  width = 0.35, opacity = 0.8),
+                        go.Bar(name = "Reference ELECp", x = stackData["ELECp"],y=stackData["Reference ELECp"],
+                               offsetgroup=2,marker_color = '#74d0f0',offset = -0.17, text = stackData["Reference ELECp"],textposition ='inside',  base=stackData["Predicted ELECp"], width = 0.35, opacity = 0.8),
+                        go.Bar(name = 'Predicted CLGp', x = stackData["CLGp"],y=stackData['Predicted CLGp'],
+                               offsetgroup=3,marker_color = '#4C78A8',offset = -0.17,text = stackData["Predicted CLGp"],textposition ='inside', width = 0.35, opacity = 0.8),
+                        go.Bar(name = 'Reference CLGp', x = stackData["CLGp"],y=stackData['Reference CLGp'],
+                               offsetgroup=3,marker_color = '#1616A7',offset = -0.17,text = stackData["Reference CLGp"],textposition ='inside',  base=stackData["Predicted CLGp"], width = 0.35, opacity = 0.8),
+                        go.Bar(name = 'Predicted Cost', x = stackData["Cost"],y=stackData['Predicted Cost'],
+                               offsetgroup=4,marker_color = '#d62728',offset = -0.17,text = stackData["Predicted Cost"],textposition ='inside',width = 0.35, opacity = 0.8),
+                        go.Bar(name = 'Reference Cost', x = stackData["Cost"],y=stackData['Reference Cost'],
+                               offsetgroup=4,marker_color = '#ff7f0e',offset = -0.17,text = stackData["Reference Cost"],textposition ='inside', base=stackData["Predicted Cost"],width = 0.35, opacity = 0.8)],
+        layout=go.Layout(
+        yaxis_title="Predicted vs. Reference Building Performance"
+    ))
+    
+    st.plotly_chart(predicted_bar,use_container_width=True)
+            
+with cols[4]:
     ""
 
-cols = st.columns(7)
-with cols[0]:
-    ""
-with cols[1]:
-    #EUI
-    st.metric('Predicted EUI(kWh/m2)', int(pred_energy[0]))
-with cols[2]:
-    #ELECp
-    st.metric('Predicted ELECp (W/m2)', int(pred_energy[1]))
-with cols[3]:
-    #CLGp
-    st.metric('Predicted CLGp (W/m2)', int(pred_energy[2]))
+
+
+# cols = st.columns(7)
+# with cols[0]:
+#     ""
+# with cols[1]:
+#     #EUI
+#     st.metric('Predicted EUI(kWh/m2)', int(pred_energy[0]))
+# with cols[2]:
+#     #ELECp
+#     st.metric('Predicted ELECp (W/m2)', int(pred_energy[1]))
+# with cols[3]:
+#     #CLGp
+#     st.metric('Predicted CLGp (W/m2)', int(pred_energy[2]))
+# # with cols[4]:
+# #     #DA
+# #     st.metric('Predicted Daylight Autonomy', int(pred_daylight[0]))
 # with cols[4]:
-#     #DA
-#     st.metric('Predicted Daylight Autonomy', int(pred_daylight[0]))
-with cols[4]:
-    #Cost
-    st.metric('Predicted Energy Cost (AU$/yr)', format(int(pred_energy[6]), ",d"))
-with cols[5]:
-    #DtS
-    st.metric('Predicted EUI Saved(-)Wasted(+)', f'{round(((int(pred_energy[0])/REF_EUI)-1)*100,2)}%')
-with cols[6]:
-    ""
+#     #Cost
+#     st.metric('Predicted Energy Cost (AU$/yr)', format(int(pred_energy[6]), ",d"))
+# with cols[5]:
+#     #DtS
+#     st.metric('Predicted EUI Saved(-)Wasted(+)', f'{round(((int(pred_energy[0])/REF_EUI)-1)*100,2)}%')
+# with cols[6]:
+#     ""
 ####################################################################################################################
 #CARBON SECTION
 
