@@ -867,7 +867,7 @@ with st.container():
         
         
 #Box Plots
-with st.expander('Statistical Correlations (Box Plots)'):
+with st.expander('Statistical Upfront/WoL Carbon Correlations (Box Plots)'):
   
     chep_bx_19 = px.box(CHEP_co2, CHEP_co2["WWR-NS"], CHEP_co2['UpfrontCO2 (KgCO2e)'], "WWR-NS", notched = True)
     chep_bx_20 = px.box(CHEP_co2, CHEP_co2["WWR-EW"], CHEP_co2['UpfrontCO2 (KgCO2e)'], "WWR-EW", notched = True)
@@ -915,13 +915,13 @@ with st.expander('Statistical Correlations (Box Plots)'):
 
 CHEP_co2_lm = CHEP_co2.drop(['VLT','Conc_Roof(m3)', 'Conc_ExWall(m3)', 'Conc_Floor(m3)','ins_Roof(m3)', 'ins_ExWall(m3)', 'ins_IntWall(m3)', 
                              'PB_Roof(m3)','PB_ExWall(m3)', 'PB_IntWall(m3)', 'Glass(m2)', 'ShadeArea(m2)','roof_contribution', 
-                             'wall_contribution', 'inwall_contribution', 'glass_contribution', 'shades_contribution','UpfrontCO2 (KgCO2e)'], axis=1)
+                             'wall_contribution', 'inwall_contribution', 'glass_contribution', 'shades_contribution', 'EUI (kWh/m2)'], axis=1)
 
-
-CHEP_co2_CORR_HTM = px.imshow(round(CHEP_co2_lm.corr(),2),text_auto=True,color_continuous_scale='greens',  width = 1000, height = 1000,title = 'Design Input Correlations with Carbon Targets')
-CHEP_co2_CORR_HTM.update_traces(textfont_size=15)
-
-st.plotly_chart(CHEP_co2_CORR_HTM, use_container_width=True)
-
-st.markdown('**:red[Note:]** Numbers represent the magnitude level of variables against each other, and Negative Values mean the input impacts the target negatively.')
+with st.expander('Statistical WoL Carbon Correlations (Box Plots)'):
+  CHEP_co2_CORR_HTM = px.imshow(round(CHEP_co2_lm.corr(),2),text_auto=True,color_continuous_scale='greens',  width = 1000, height = 1000,title = 'Design Input Correlations with Carbon Targets')
+  CHEP_co2_CORR_HTM.update_traces(textfont_size=15)
+  
+  st.plotly_chart(CHEP_co2_CORR_HTM, use_container_width=True)
+  
+  st.markdown('**:red[Note:]** Numbers represent the magnitude level of variables against each other, and Negative Values mean the input impacts the target negatively.')
 
