@@ -150,7 +150,7 @@ with st.container():
     
            
         
-    cols = st.columns([0.6,0.6,0.6,0.6,0.6])
+    cols = st.columns(5)
             
     with cols[0]:
         eui_performance = go.Figure(go.Indicator(
@@ -186,7 +186,7 @@ with st.container():
         title = {'text': "CLGp Performance",'font':{'family':'Arial'}}
         ))
     
-        st.plotly_chart(clg_performance,  use_container_width=False)
+        st.plotly_chart(clg_performance,  use_container_width=True)
     
     with cols[3]:
         DA_performance = go.Figure(go.Indicator(
