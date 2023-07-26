@@ -121,7 +121,7 @@ with st.container():
     st.markdown(":red[**_Cooling Thermal Peak (CLGp):_**] This is the maximum thermal cooling load per unit area of the building, measured in W/m2. High peak cooling loads can indicate potential issues with overheating and could require larger or more efficient cooling systems.")
     st.markdown(":red[**_Daylight Autonomy (%>500lux):_**] This is the percentage of a space that receives at least 500 lux from daylight alone for at least half of the operating hours each year. Daylight autonomy is a measure of a building's potential for daylighting, which can reduce the need for artificial lighting and improve occupant well-being.")
     st.markdown(":red[**_Excessive Daylight (%>10000lux):_**] This metric indicates the percentage of a space that receives more than 10,000 lux, which can be uncomfortably bright and lead to glare. High values can indicate potential issues with glare and may require adjustments to the window design or shading.")
-    st.markdown(":red[**_Operative Temperature % Time > 26 deg C_**] This metric measures the percentage of time the operative temperature in the respective zones exceeds 26°C. The operative temperature is a measure of thermal comfort that takes into account air temperature, radiant temperature, and air speed. High values could indicate potential issues with overheating.")
+    st.markdown(":red[**_Operative Temperature % Time > 26 deg C:_**] This metric measures the percentage of time the operative temperature in the respective zones exceeds 26°C. The operative temperature is a measure of thermal comfort that takes into account air temperature, radiant temperature, and air speed. High values could indicate potential issues with overheating.")
 
     
     st.subheader('Design Performance against Reference Case')
@@ -249,7 +249,8 @@ with st.container():
     # chep_pcm.update_traces(line_colorbar_tickangle=45)
     
     st.plotly_chart(chep_pcm, use_container_width=True)
-        
+
+with st.expander():
  
  
     chep_bx_01 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["EUI Saved(-)Wasted(+)"], "WWR-NS", notched = True)
