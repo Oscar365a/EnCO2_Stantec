@@ -250,7 +250,7 @@ with st.container():
     
     st.plotly_chart(chep_pcm, use_container_width=True)
 
-with st.expander('Statistical Correlations (Box Plots)'):
+with st.expander('Statistical Building Performance Correlations (Box Plots)'):
  
  
     chep_bx_01 = px.box(CHEP_en, CHEP_en["WWR-NS"], CHEP_en["EUI Saved(-)Wasted(+)"], "WWR-NS", notched = True)
@@ -320,13 +320,14 @@ def get_index(df) -> dict:
 
 CHEP_ridge = CHEP_en.drop(['img', 'REF_ELECp', 'REF_CLGp', 'REF_DA','REF_ExcDA'], axis=1)
 
+with st.expander('Statistical Building Performance Correlations (Heat Map)'):
 
-CHEP_CORR_HTM = px.imshow(round(CHEP_ridge.corr(),2),text_auto=True,color_continuous_scale='thermal',  width = 1000, height = 1000,title = 'Design Input Correlations with Energy/Comfort Targets')
-CHEP_CORR_HTM.update_traces(textfont_size=15)
-
-st.plotly_chart(CHEP_CORR_HTM, use_container_width=True)
-
-st.markdown('**:red[Note:]** Numbers represent the magnitude level of variables against each other, and Negative Values mean the input impacts the target negatively.')
+  CHEP_CORR_HTM = px.imshow(round(CHEP_ridge.corr(),2),text_auto=True,color_continuous_scale='thermal',  width = 1000, height = 1000,title = 'Design Input Correlations with Energy/Comfort Targets')
+  CHEP_CORR_HTM.update_traces(textfont_size=15)
+  
+  st.plotly_chart(CHEP_CORR_HTM, use_container_width=True)
+  
+  st.markdown('**:red[Note:]** Numbers represent the magnitude level of variables against each other, and Negative Values mean the input impacts the target negatively.')
 
 #Energy Tagets 
 
