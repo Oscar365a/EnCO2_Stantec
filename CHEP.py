@@ -38,6 +38,10 @@ st.markdown('---')
 Floor_area = 2310.5  ##########
 en_price = 0.2 ###$/kWh
 REF_EUI = 126.05
+REF_ELECp = 22.29
+REF_CLGp = 49.03
+REF_DA = 66.66
+REF_glare = 3.76
 
 #Energy Cost Calc
 
@@ -50,12 +54,19 @@ with st.sidebar:
     
     st.title('Choose the Design Inputs:')
     
-    WWR_NS = st.select_slider('Window-to-Wall Ratio (North-South):', options = [20, 40, 60, 80], value = 40, key = 'WWR_NS')
+    WWR_NS = st.select_slider('Window-to-Wall Ratio (North-South):', options = [20, 40, 60, 80], value = 40, key = 'WWR_NS') 
     WWR_EW = st.select_slider('Window-to-Wall Ratio (East-West):', options = [20, 40, 60, 80], value = 60, key = 'WWR_EW')
+    st.markdown("_WWR represents the amount of window area compared to the total wall area for the respective building facades. Higher ratios mean more window area, which can lead to more daylight but also potentially more heat gain or loss, depending on the climate and the window's properties._")
+
     Shade_dep = st.select_slider('Shade Depth (mm):', options = [0, 300, 600, 900], value = 300, key = 'shadedepth')
-    SHGC = st.select_slider('SHGC:', options = [0.22,0.34,0.46,0.58], value = 0.46, key = 'glass_shgc')
-    exwall = st.select_slider('External Wall R-value:', options = [1.0,1.4], value = 1.4, key = 'exwall_r')
+    st.markdown("_The depth of shading devices like overhangs or fins on a building's windows, measured in millimeters. Shading devices can significantly reduce the amount of solar heat gain in a building, improving comfort and reducing cooling loads._")
     
+    SHGC = st.select_slider('SHGC:', options = [0.22,0.34,0.46,0.58], value = 0.46, key = 'glass_shgc')
+    st.markdown("_This is the fraction of incident solar radiation that is admitted through a window, both directly transmitted, and absorbed and subsequently released inward. It's expressed as a number between 0 and 1. The lower a window's SHGC, the less solar heat it transmits, which can help reduce cooling loads in hot climates._")
+
+    exwall = st.select_slider('External Wall R-value:', options = [1.0,1.4], value = 1.4, key = 'exwall_r')
+    st.markdown("_The R-value measures the thermal resistance of a material or assembly like a wall. It's measured in m²/kw. The higher the R-value, the better the material or assembly is at resisting heat flow, which can reduce heating and cooling loads._")
+
     
 with st.container():
      
@@ -97,38 +108,119 @@ with st.container():
     with cols[5]:
         st.metric('Excessive Daylight% (>10000lx)',round(get_metrics_EUI()[4],2))
     with cols[6]:
-        st.metric('Cost (AU$/yr)', int(get_metrics_EUI()[5]))
+        st.metric('Cost (AU$/yr)', format(int(get_metrics_EUI()[5]), ",d"))
     with cols[7]:
         st.metric('Patient North% (> OT 26C)', int(get_metrics_EUI()[6]))
     with cols[8]:
         st.metric('Patient South% (> OT 26C)', int(get_metrics_EUI()[7]))
     with cols[9]:
         ""
-        
-    st.subheader('Design Performance against Reference Case - % Saved (-) Wasted (+)')
+
+    st.markdown(":red[**_Energy Use Intensity (EUI):_**] The Energy Use Intensity measures a building's energy use per unit area, usually expressed in Kwh/m2 per year. It's a key metric for assessing a building's energy efficiency. Lower EUI values mean better energy efficiency.")
+    st.markdown(":red[**_Peak Electricity Load (ELECp):_**] This is the maximum electricity demand per unit area of the building, measured in W/m2. High peak loads can lead to higher utility costs, especially in areas where utilities charge based on peak demand.")
+    st.markdown(":red[**_Cooling Thermal Peak (CLGp):_**] This is the maximum thermal cooling load per unit area of the building, measured in W/m2. High peak cooling loads can indicate potential issues with overheating and could require larger or more efficient cooling systems.")
+    st.markdown(":red[**_Daylight Autonomy (%>500lux):_**] This is the percentage of a space that receives at least 500 lux from daylight alone for at least half of the operating hours each year. Daylight autonomy is a measure of a building's potential for daylighting, which can reduce the need for artificial lighting and improve occupant well-being.")
+    st.markdown(":red[**_Excessive Daylight (%>10000lux):_**] This metric indicates the percentage of a space that receives more than 10,000 lux, which can be uncomfortably bright and lead to glare. High values can indicate potential issues with glare and may require adjustments to the window design or shading.")
+    st.markdown(":red[**_Operative Temperature % Time > 26 deg C - North Zone_**] and :red[**_Operative Temperature % Time > 26 deg C - South Zone:_**] These metrics measure the percentage of time the operative temperature in the respective zones exceeds 26°C. The operative temperature is a measure of thermal comfort that takes into account air temperature, radiant temperature, and air speed. High values could indicate potential issues with overheating.")
+
+    
+    st.subheader('Design Performance against Reference Case')
     
     data_ref_eui = {'WWR':'40%','Shade Depth':'No Shades','U-Value/SHGC/VLT': '3.91 / 0.30 / 0.38', 'EXT Walls':'R1.4', 'Roof/Ceiling':'R3.7', 'INT Walls':'R1.4'}
     REF_DF_eui = pd.DataFrame([data_ref_eui], index = ['Reference Case'])
     st.dataframe(REF_DF_eui, use_container_width= True)
     
     
-    cols = st.columns(7)
+    # cols = st.columns(7)
     
+    # with cols[0]:
+    #     ""
+    # with cols[1]:
+    #     st.metric('EUI(kWh/m2)', f'{get_metrics_EUI()[9].iloc[0]} %' )
+    # with cols[2]:
+    #     st.metric('ELECp(W/m2)', f'{get_metrics_EUI()[10].iloc[0]} %')
+    # with cols[3]:
+    #     st.metric('CLGp(W/m2)', f'{get_metrics_EUI()[11].iloc[0]} %') 
+    # with cols[4]:
+    #     st.metric('Daylight Autonomy (500lx)', f'{get_metrics_EUI()[12].iloc[0]} %')
+    # with cols[5]:
+    #     st.metric('Excessive Daylight (>10000lx)', f'{get_metrics_EUI()[13].iloc[0]} %')
+    # with cols[6]:
+    #     ""
+    
+           
+        
+    cols = st.columns([0.01,0.8,0.8,0.8,0.8,0.8,0.01])
+            
+            
     with cols[0]:
         ""
+        
     with cols[1]:
-        st.metric('EUI(kWh/m2)', f'{get_metrics_EUI()[9].iloc[0]} %' )
+        eui_performance = go.Figure(go.Indicator(
+        mode = "gauge+delta",
+        value = get_metrics_EUI()[0].iloc[0],
+        delta = {'reference':REF_EUI, 'relative': True,'increasing':{'color':'red'}, 'decreasing':{'color':'Green'}, 'valueformat':".2", 'suffix':'%'},
+        gauge = {'bar':{'color':'white', 'line':{'width':3}},'bordercolor':'darkgray','bgcolor':'lightgray', 'threshold':{'thickness':1,'value':REF_EUI}, 'axis':{'dtick':5,'range':(CHEP_en['EUI (kWh/m2)'].min(),CHEP_en['EUI (kWh/m2)'].max())}},
+        number = {'font':{'family':'Arial', 'size':1}},
+        title = {'text': "EUI Performance",'font':{'family':'Arial'}}
+        ))
+
+        st.plotly_chart(eui_performance, use_container_width=True)
+    
     with cols[2]:
-        st.metric('ELECp(W/m2)', f'{get_metrics_EUI()[10].iloc[0]} %')
+        elec_performance = go.Figure(go.Indicator(
+        mode = "gauge+delta",
+        value = get_metrics_EUI()[1].iloc[0],
+        delta = {'reference':REF_ELECp,  'relative': True,'increasing':{'color':'red'}, 'decreasing':{'color':'Green'},'valueformat':".2", 'suffix':'%'},
+        gauge = {'bar':{'color':'white', 'line':{'width':3}},'bordercolor':'darkgray','bgcolor':'lightgray', 'threshold':{'thickness':1,'value':REF_ELECp}, 'axis':{'dtick':2,'range':(CHEP_en['ELECp (W/m2)'].min(),CHEP_en['ELECp (W/m2)'].max())}},
+        number = {'font':{'family':'Arial'}},
+        title = {'text': "ELECp Performance",'font':{'family':'Arial'}}
+        ))
+    
+        st.plotly_chart(elec_performance, use_container_width=True)
+        
     with cols[3]:
-        st.metric('CLGp(W/m2)', f'{get_metrics_EUI()[11].iloc[0]} %') 
+        clg_performance = go.Figure(go.Indicator(
+        mode = "gauge+delta",
+        value = get_metrics_EUI()[2].iloc[0],
+        delta = {'reference':REF_CLGp, 'relative': True,'increasing':{'color':'red'}, 'decreasing':{'color':'Green'},'valueformat':".2", 'suffix':'%'},
+        gauge = {'bar':{'color':'white', 'line':{'width':3}},'bordercolor':'darkgray','bgcolor':'lightgray', 'threshold':{'thickness':1,'value':REF_CLGp}, 'axis':{'dtick':4,'range':(CHEP_en['CLGp (W/m2)'].min(),CHEP_en['CLGp (W/m2)'].max())}},
+        number = {'font':{'family':'Arial'}},
+        title = {'text': "CLGp Performance",'font':{'family':'Arial'}}
+        ))
+    
+        st.plotly_chart(clg_performance,  use_container_width=False)
+    
     with cols[4]:
-        st.metric('Daylight Autonomy (500lx)', f'{get_metrics_EUI()[12].iloc[0]} %')
+        DA_performance = go.Figure(go.Indicator(
+        mode = "gauge+delta",
+        value = get_metrics_EUI()[3].iloc[0],
+        delta = {'reference':REF_DA, 'relative': True,'increasing':{'color':'Green'}, 'decreasing':{'color':'Red'},'valueformat':".2", 'suffix':'%'},
+        gauge = {'bar':{'color':'white', 'line':{'width':3}},'bordercolor':'darkgray','bgcolor':'lightgray', 'threshold':{'thickness':1,'value':REF_DA}, 'axis':{'dtick':5,'range':(CHEP_en['Daylight Autonomy'].min(),CHEP_en['Daylight Autonomy'].max())}},
+        number = {'font':{'family':'Arial'}},
+        title = {'text': "Daylight Level",'font':{'family':'Arial'}}
+        ))
+    
+        st.plotly_chart(DA_performance, use_container_width=True)
+    
     with cols[5]:
-        st.metric('Excessive Daylight (>10000lx)', f'{get_metrics_EUI()[13].iloc[0]} %')
+        glare_performance = go.Figure(go.Indicator(
+        mode = "gauge+delta",
+        value = get_metrics_EUI()[4].iloc[0],
+        delta = {'reference':REF_glare,'relative': True,'increasing':{'color':'red'}, 'decreasing':{'color':'Green'},'valueformat':".2", 'suffix':'%'},
+        gauge = {'bar':{'color':'white', 'line':{'width':3}},'bordercolor':'darkgray','bgcolor':'lightgray', 'threshold':{'thickness':1,'value':REF_glare}, 'axis':{'dtick':2,'range':(CHEP_en['Excessive Daylight'].min(),CHEP_en['Excessive Daylight'].max())}},
+        number = {'font':{'family':'Arial'}},
+        title = {'text': "Discomfort Glare Level",'font':{'family':'Arial'}}
+        ))
+    
+        st.plotly_chart(glare_performance, use_container_width=True)
+    
     with cols[6]:
         ""
-    
+        
+        
+        
     def loadImages():
       
         #img = Image.open(rf'C:\Users\atabadkani\Streamlit Apps\CHEP\data\images\{get_metrics_EUI()[8].iloc[0]}')
@@ -322,7 +414,7 @@ with cols[3]:
 #     st.metric('Predicted Daylight Autonomy', int(pred_daylight[0]))
 with cols[4]:
     #Cost
-    st.metric('Predicted Energy Cost (AU$/yr)', int(pred_energy[6]))
+    st.metric('Predicted Energy Cost (AU$/yr)', format(int(pred_energy[6]), ",d"))
 with cols[5]:
     #DtS
     st.metric('Predicted EUI Saved(-)Wasted(+)', f'{round(((int(pred_energy[0])/REF_EUI)-1)*100,2)}%')
@@ -683,13 +775,13 @@ with st.container():
     with cols[0]:
         ""
     with cols[1]:
-        st.metric('Proposed Embodied CO2 (kgCO2e)', int(round(get_metrics_CO2()[0],0)))
+        st.metric('Proposed Embodied CO2 (kgCO2e)', format(int(round(get_metrics_CO2()[0],0)), ",d"))
     with cols[2]:
-        st.metric(f'Proposed Whole of Life (kgCO2e/{num_years}yrs)', int(round(get_metrics_CO2()[1],0)))
+        st.metric(f'Proposed Whole of Life (kgCO2e/{num_years}yrs)', format(int(round(get_metrics_CO2()[1],0)), ",d"))
     with cols[3]:
-        st.metric('Reference Embodied CO2 (kgCO2e)', int(round(DTS_Upfront,0)))
+        st.metric('Reference Embodied CO2 (kgCO2e)', format(int(round(DTS_Upfront,0)), ",d"))
     with cols[4]:
-        st.metric(f'Reference Whole of Life (kgCO2e/{num_years}yrs)', int(round(DtS_WoL,0)))
+        st.metric(f'Reference Whole of Life (kgCO2e/{num_years}yrs)', format(int(round(DtS_WoL,0)),",d"))
     with cols[5]:
         st.metric('% Embodied CO2 Improvement (kgCO2e)', round((1 - (int(round(get_metrics_CO2()[0],0))/int(round(DTS_Upfront,0))))*100,2))
     with cols[6]:
