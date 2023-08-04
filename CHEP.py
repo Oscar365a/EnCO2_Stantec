@@ -828,8 +828,8 @@ with st.container():
     with cols[7]:
        ""
 
-   st.markdown(":red[**_Embodied Carbon:_**] This is the sum of greenhouse gas emissions released during the following life-cycle stages: raw material extraction, transportation, manufacturing, construction, maintenance, renovation, and end-of-life for a product or system.")
-   st.markdown(":red[**_Whole of Life Performance:_**] WoL here includes the carbon emissions derived from operational energy and embodied carbon for the selected building life cycle.")
+st.markdown(":red[**_Embodied Carbon:_**] This is the sum of greenhouse gas emissions released during the following life-cycle stages: raw material extraction, transportation, manufacturing, construction, maintenance, renovation, and end-of-life for a product or system.")
+st.markdown(":red[**_Whole of Life Performance:_**] WoL here includes the carbon emissions derived from operational energy and embodied carbon for the selected building life cycle.")
 
 #Pie Charts
 #-------------------------------------------------------------------------------------------------------------------------------------
