@@ -827,6 +827,10 @@ with st.container():
         st.metric(f'% Whole of Life Improvement (kgCO2e/{num_years}yrs)', round((1-(int(round(get_metrics_CO2()[1],0)) / int(round(DtS_WoL,0))))*100,2))
     with cols[7]:
        ""
+
+   st.markdown(":red[**_Embodied Carbon:_**] This is the sum of greenhouse gas emissions released during the following life-cycle stages: raw material extraction, transportation, manufacturing, construction, maintenance, renovation, and end-of-life for a product or system.")
+   st.markdown(":red[**_Whole of Life Performance:_**] WoL here includes the carbon emissions derived from operational energy and embodied carbon for the selected building life cycle.")
+
 #Pie Charts
 #-------------------------------------------------------------------------------------------------------------------------------------
 
