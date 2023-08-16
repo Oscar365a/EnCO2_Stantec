@@ -966,7 +966,7 @@ CHEP_co2_lm = CHEP_co2.drop(['VLT','Conc_Roof(m3)', 'Conc_ExWall(m3)', 'Conc_Flo
                              'PB_Roof(m3)','PB_ExWall(m3)', 'PB_IntWall(m3)', 'Glass(m2)', 'ShadeArea(m2)','roof_contribution', 
                              'wall_contribution', 'inwall_contribution', 'glass_contribution', 'shades_contribution', 'EUI (kWh/m2)'], axis=1)
 
-with st.expander('Statistical WoL Carbon Correlations (Box Plots)'):
+with st.expander('Statistical WoL Carbon Correlations (HEAT MAP)'):
   CHEP_co2_CORR_HTM = px.imshow(round(CHEP_co2_lm.corr(),2),text_auto=True,color_continuous_scale='greens',  width = 1000, height = 1000)
   CHEP_co2_CORR_HTM.update_traces(textfont_size=15)
   
