@@ -648,7 +648,7 @@ with st.container():
             PB_1m = 0.01
             PB_vol_roof = (CHEP_co2['PB_Roof(m3)'].iloc[i]*PB_1m*roof_PB_em)
             
-        elif (roof_PB_selection == 'Plasterboard - 13 mm') or (wall_PB_selection == 'Plasterboard - 13 mm') or (inwall_PB_selection == 'Plasterboard - 13 mm'):
+        elif (roof_PB_selection == 'Plasterboard - 13 mm'):
             PB_1m = 0.013
             PB_vol_roof = (CHEP_co2['PB_Roof(m3)'].iloc[i]*PB_1m*roof_PB_em)
         
