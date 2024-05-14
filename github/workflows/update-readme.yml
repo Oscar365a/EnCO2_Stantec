@@ -1,0 +1,24 @@
+name: Update README
+
+on:
+  schedule:
+    - cron: "*/1 * * * *" # Run every 1 minutes
+
+jobs:
+  update_readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Update README
+        run: |
+          echo "Updated content" > README.md
+
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "Automated README update"
+          git push
