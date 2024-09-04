@@ -10,7 +10,7 @@ from sklearn.linear_model import Ridge
 
 import numpy as np
 
-st.set_page_config(page_title='Project Parametric Analysis', layout='wide')
+st.set_page_config(page_title='EnCO2 Stantec', layout='wide')
 
 hide_st_style = """
                 <style>
@@ -29,7 +29,7 @@ chep_co2 = pd.read_csv('./data/CO2.csv')
 #epic = pd.DataFrame(pd.read_excel(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\EPiC.xlsx'))
 #chep_co2 = pd.read_csv(r'C:\Users\atabadkani\Streamlit Apps\CHEP\data\CO2.csv')
 
-st.title("Project Parametric Analysis - 512 Iterations")
+st.title("EnCO2 Analytical Dashboard")
 
 st.markdown('---')
 st.header(":red[**BUILDING PERFORMANCE**]")
